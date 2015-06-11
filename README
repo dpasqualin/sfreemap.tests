@@ -1,0 +1,16 @@
+Package Requirements for Development
+====================
+sudo apt-get install r-base-core
+
+Package Requirements for Development
+====================
+sudo apt-get install r-base-core texlive-full
+
+Dependencies
+=============
+# Run within R
+install.packages("phytools")
+
+Build and Install
+=================
+R CMD build sfreemap-tests && R CMD INSTALL sfreemap-tests

@@ -1,0 +1,7 @@
+export(simmap.mean, simulation.data, sfreemap.diff
+        , sfreemap.test.box_and_whiskers, sfreemap.test)
+
+importFrom(sfreemap, sfreemap.describe, sfreemap.map)
+importFrom(ape, ace, plot.phylo)
+importFrom(ape, read.tree, reorder.phylo, write.tree)
+importFrom(phytools, countSimmap, pbtree, make.simmap, sim.history)
