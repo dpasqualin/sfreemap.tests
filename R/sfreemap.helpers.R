@@ -1,9 +1,17 @@
 simulation.data <- function(tree) {
     # the order of columns created by the sim.history might be different
     # from what simmap and sfreemap expect.
-    fix_order <- tree$mapped.edge[,order(colnames(tree$mapped.edge))]
-    lmt <- countSimmap(tree)$N
-    emr <- apply(fix_order, 2, sum)
+
+    if (class(tree) == 'phylo') {
+        fix_order <- tree$mapped.edge[,order(colnames(tree$mapped.edge))]
+        lmt <- countSimmap(tree)$N
+        emr <- apply(fix_order, 2, sum)
+    } else {
+        lmt <- mean(countSimmap(mtrees)$Tr[,1])
+        emr <- t(sapply(tree, function(x) colSums(x$mapped.edge)))
+        emr <- colMeans(emr)
+        emr <- emr[order(names(emr))]
+    }
     return (list(lmt=lmt, emr=emr))
 }
 

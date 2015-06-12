@@ -47,23 +47,38 @@ sfreemap.test.box_and_whiskers <- function(species=100
 
 	#outdir_suffix <- format(Sys.time(), "%Y-%m-%d_%H:%M:%OS")
 
+    if (class(tree) == 'phylo') {
+        states <- tree$states
+    } else {
+        states <- tree[[1]]$states
+    }
+
 	for (sim_num in 1:n_tests) {
-		mtrees <- make.simmap(tree, tree$states, Q='mcmc', pi='equal'
+		mtrees <- make.simmap(tree, states, Q='mcmc', pi='equal'
 								  , model='ER', nsim=nsim
 								  , samplefreq=sample_freq
 								  , message=FALSE)
 
-		for (i in 1:length(mtrees)) {
-			v <- simmap.mean(mtrees[[i]])
+		for (i in 1:(length(mtrees)/n_trees)) {
+            if (class(tree) == 'phylo') {
+			    v <- simmap.mean(mtrees[[i]])
+            } else {
+                start <- (i-1) * length(tree) + 1
+                end <- start + length(tree) - 1
+                cat('slicing from', start, 'to', end, '\n')
+                v <- simmap.mean(mtrees[start:end])
+            }
 			diff <- sfreemap.diff(hist, v)
 			row <- c(i*sample_freq, diff$lmt, diff$emr, v$lmt, v$emr[1], v$emr[2])
 			idx <- ((sim_num-1) * nsim) + i
+            print(idx)
+            print(row)
 			simmap_result[as.character(idx),] <- row
 		}
 
 	}
 
-	sfreemap_result <- sfreemap.map(tree, tree$states, Q='mcmc'
+	sfreemap_result <- sfreemap.map(tree, states, Q='mcmc'
 									, n_simulations=nsim
 									, sample_freq=sample_freq)
 
