@@ -1,5 +1,6 @@
 sfreemap.test.box_and_whiskers <- function(species=100
 										   , trees=NULL
+                                           , n_trees=1
 										   , nsim=50
 										   , n_tests=5
 										   , sample_freq=100
@@ -22,9 +23,20 @@ sfreemap.test.box_and_whiskers <- function(species=100
 		QS <- matrix(c(-1,1,1,-1), 2, 2)
 		rownames(QS)<-colnames(QS)<-letters[1:nrow(QS)]
 
-		tree <- pbtree(n=species, scale=1)
-		tree <- sim.history(tree, QS, message=FALSE)
-	}
+        if (n_trees > 1) {
+            tree <- list()
+            for (i in 1:n_trees) {
+                t <- pbtree(n=species, scale=1)
+                t <- sim.history(t, QS, message=FALSE)
+
+                tree[[i]] <- t
+            }
+            class(tree) <- 'multiPhylo'
+        } else {
+            tree <- pbtree(n=species, scale=1)
+            tree <- sim.history(tree, QS, message=FALSE)
+	    }
+    }
 
  	hist <- simulation.data(tree)
 
