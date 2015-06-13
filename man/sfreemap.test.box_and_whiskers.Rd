@@ -3,6 +3,9 @@
 \title{Simulation free stochastic character maps on a phylogenetic tree}
 \usage{
 sfreemap.test.box_and_whiskers(species=100
+							   , Q='mcmc'
+							   , pi='equal'
+							   , model='ER'
 							   , trees=NULL
                                , n_trees=1
 							   , nsim=50
@@ -13,6 +16,9 @@ sfreemap.test.box_and_whiskers(species=100
 }
 \arguments{
     \item{species}{the number of species in the simulated phylogeny}
+	\item{Q}{The transition matrix}
+	\item{pi}{whatever}
+	\item{model}{The evolution model}
 	\item{trees}{The trees to test on. Leave it NULL to test with a single random tree}
 	\item{n_trees}{When trees=NULL you can choose how many random trees to
     generate}

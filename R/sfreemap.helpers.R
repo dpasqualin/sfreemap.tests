@@ -7,7 +7,7 @@ simulation.data <- function(tree) {
         lmt <- countSimmap(tree)$N
         emr <- apply(fix_order, 2, sum)
     } else {
-        lmt <- mean(countSimmap(mtrees)$Tr[,1])
+        lmt <- mean(countSimmap(tree)$Tr[,1])
         emr <- t(sapply(tree, function(x) colSums(x$mapped.edge)))
         emr <- colMeans(emr)
         emr <- emr[order(names(emr))]

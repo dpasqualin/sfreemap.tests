@@ -1,4 +1,7 @@
 sfreemap.test.box_and_whiskers <- function(species=100
+										   , Q='mcmc'
+										   , pi='equal'
+										   , model='ER'
 										   , trees=NULL
                                            , n_trees=1
 										   , nsim=50
@@ -23,29 +26,23 @@ sfreemap.test.box_and_whiskers <- function(species=100
 		QS <- matrix(c(-1,1,1,-1), 2, 2)
 		rownames(QS)<-colnames(QS)<-letters[1:nrow(QS)]
 
+		topologies <- pbtree(n=species, nsim=n_trees, scale=1)
         if (n_trees > 1) {
-            tree <- list()
-            for (i in 1:n_trees) {
-                t <- pbtree(n=species, scale=1)
-                t <- sim.history(t, QS, message=FALSE)
-
-                tree[[i]] <- t
-            }
+			tree <- lapply(topologies, sim.history, Q=QS, message=FALSE)
             class(tree) <- 'multiPhylo'
         } else {
-            tree <- pbtree(n=species, scale=1)
             tree <- sim.history(tree, QS, message=FALSE)
 	    }
     }
 
  	hist <- simulation.data(tree)
 
- 	metric_values <- c("generation", "diff_lmt", "diff_emr", "transitions", "time_in_a", "time_in_b")
+ 	metric_values <- c("generation", "diff_lmt", "diff_emr"
+						, "transitions", "time_in_a", "time_in_b")
+						
 	simmap_result <- matrix(0, nrow=n_tests*nsim
 			, ncol=length(metric_values)
 			, dimnames=list(1:(n_tests*nsim), metric_values))
-
-	#outdir_suffix <- format(Sys.time(), "%Y-%m-%d_%H:%M:%OS")
 
     if (class(tree) == 'phylo') {
         states <- tree$states
@@ -54,8 +51,8 @@ sfreemap.test.box_and_whiskers <- function(species=100
     }
 
 	for (sim_num in 1:n_tests) {
-		mtrees <- make.simmap(tree, states, Q='mcmc', pi='equal'
-								  , model='ER', nsim=nsim
+		mtrees <- make.simmap(tree, states, Q=Q, pi=pi
+								  , model=model, nsim=nsim
 								  , samplefreq=sample_freq
 								  , message=FALSE)
 
@@ -65,7 +62,6 @@ sfreemap.test.box_and_whiskers <- function(species=100
             } else {
                 start <- (i-1) * length(tree) + 1
                 end <- start + length(tree) - 1
-                cat('slicing from', start, 'to', end, '\n')
                 v <- simmap.mean(mtrees[start:end])
             }
 			diff <- sfreemap.diff(hist, v)
@@ -78,7 +74,7 @@ sfreemap.test.box_and_whiskers <- function(species=100
 
 	}
 
-	sfreemap_result <- sfreemap.map(tree, states, Q='mcmc'
+	sfreemap_result <- sfreemap.map(tree, states, Q=Q
 									, n_simulations=nsim
 									, sample_freq=sample_freq)
 
@@ -86,8 +82,15 @@ sfreemap.test.box_and_whiskers <- function(species=100
 	sfreemap_mean <- list(lmt=sum(desc$transitions), emr=desc$dwelling_times)
 	sfreemap_diff <- sfreemap.diff(hist, sfreemap_mean)
 
-	out_dir <- create_out_dir(dest_dir, species, 'mcmc', 'ER', 'boxplot')
+	outdir_suffix <- format(Sys.time(), "%Y-%m-%d_%H:%M:%OS")
+	outdir_suffix <- paste(outdir_suffix, 'boxplot', sep='_')
+
+	out_dir <- create_out_dir(dest_dir, species, 'mcmc', 'ER', outdir_suffix)
 	out_file <- create_out_file(out_dir, 'simmap', nsim)
+
+	create_info_file(out_dir, species=species, Q=Q, pi=pi, model=model
+		, trees=trees, n_trees=n_trees, nsim=nsim, n_tests=n_tests
+		, sample_freq=sample_freq)
 
 	plot_boxplot(out_dir, 'boxplot_emr_diff.png', diff_emr ~ generation
 			     , data=simmap_result, 'Generations'
@@ -118,6 +121,18 @@ sfreemap.test.box_and_whiskers <- function(species=100
 
 	return(list(simmap=simmap_result, sfreemap=sfreemap_result, tree=tree))
 
+}
+
+# print all arguments to a file
+create_info_file <- function(out_dir, ...) {
+	args <- list(...)
+	out_file <- paste(out_dir, 'arguments.txt', sep='/')
+	for (i in names(args)) {
+		if (nchar(i) > 0) {
+			txt <- paste(i, '=', args[[i]])
+			write(txt, file=out_file, append=TRUE)
+		}
+	}
 }
 
 plot_boxplot <- function(out_dir, out_file, formula, data, xlab, ylab, title, line_data) {
