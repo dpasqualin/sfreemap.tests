@@ -1,5 +1,5 @@
 export(simmap.mean, simulation.data, sfreemap.diff
-        , sfreemap.test.box_and_whiskers, sfreemap.test)
+        , sfreemap.test.boxplot, sfreemap.test.perf)
 
 importFrom(sfreemap, sfreemap.describe, sfreemap.map)
 importFrom(ape, ace, plot.phylo)

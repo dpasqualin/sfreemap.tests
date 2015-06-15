@@ -1,4 +1,4 @@
-sfreemap.test.box_and_whiskers <- function(species=100
+sfreemap.test.boxplot <- function(species=100
 										   , Q='mcmc'
 										   , pi='equal'
 										   , model='ER'
@@ -22,24 +22,14 @@ sfreemap.test.box_and_whiskers <- function(species=100
 	# simulate a pure birth tree and the character history
     # use scale=1 to scale the tree to 1
 	if (is.null(trees)) {
-		# Q used in the simulation
-		QS <- matrix(c(-1,1,1,-1), 2, 2)
-		rownames(QS)<-colnames(QS)<-letters[1:nrow(QS)]
-
-		topologies <- pbtree(n=species, nsim=n_trees, scale=1)
-        if (n_trees > 1) {
-			tree <- lapply(topologies, sim.history, Q=QS, message=FALSE)
-            class(tree) <- 'multiPhylo'
-        } else {
-            tree <- sim.history(tree, QS, message=FALSE)
-	    }
+		tree <- create_trees(n_trees, species, 2)
     }
 
  	hist <- simulation.data(tree)
 
  	metric_values <- c("generation", "diff_lmt", "diff_emr"
 						, "transitions", "time_in_a", "time_in_b")
-						
+
 	simmap_result <- matrix(0, nrow=n_tests*nsim
 			, ncol=length(metric_values)
 			, dimnames=list(1:(n_tests*nsim), metric_values))
@@ -67,8 +57,6 @@ sfreemap.test.box_and_whiskers <- function(species=100
 			diff <- sfreemap.diff(hist, v)
 			row <- c(i*sample_freq, diff$lmt, diff$emr, v$lmt, v$emr[1], v$emr[2])
 			idx <- ((sim_num-1) * nsim) + i
-            print(idx)
-            print(row)
 			simmap_result[as.character(idx),] <- row
 		}
 
@@ -117,213 +105,46 @@ sfreemap.test.box_and_whiskers <- function(species=100
 				 , 'Dwelling time', 'Expected dwelling time in state "b"'
 				 , sfreemap_mean$emr[2])
 
-	write_to_file(tree, out_dir, out_file, hist, simmap_result)
+	write_to_file(out_file, simmap_result, tree, out_dir, hist)
 
 	return(list(simmap=simmap_result, sfreemap=sfreemap_result, tree=tree))
 
 }
 
-# print all arguments to a file
-create_info_file <- function(out_dir, ...) {
-	args <- list(...)
-	out_file <- paste(out_dir, 'arguments.txt', sep='/')
-	for (i in names(args)) {
-		if (nchar(i) > 0) {
-			txt <- paste(i, '=', args[[i]])
-			write(txt, file=out_file, append=TRUE)
-		}
-	}
-}
+sfreemap.test.perf <- function(tree_seq, species_seq, q_size_seq
+								, n_tests=5, parallel=TRUE, prog='sfreemap'
+								, message=TRUE, file=NULL) {
 
-plot_boxplot <- function(out_dir, out_file, formula, data, xlab, ylab, title, line_data) {
+	res_size <- length(tree_seq) * length(species_seq) * length(q_size_seq)
 
-	output <- paste(out_dir, out_file, sep='/')
-	png(output, width=1280, height=720)
-	boxplot(formula, data=data, xlab=xlab, ylab=ylab, las=2, main=title)
-	abline(h=line_data, col='red')
-	dev.off()
+	result <- create_result_matrix(res_size)
 
-}
-
-sfreemap.test <- function(species=100, nsim_values=NULL, Q=NULL, QS=NULL
-			     		  , model='ER', pi="estimated", message=FALSE
-			     		  , test_sfreemap=TRUE, test_simmap=TRUE
-				 		  , save_to_file=TRUE
-						  , ... ) {
-
-    if (isTRUE(save_to_file)) {
-		dest_dir <- 'tests/'
-	    if (hasArg(dest_dir)) {
-	        dest_dir <- list(...)$dest_dir
-	    }
-    	dir.create(dest_dir, showWarnings=FALSE)
-    }
-
-	# when Q=mcmc, how often should we sample from the simulation?
-	sample_freq <- 100
-	if (hasArg(sample_freq)) {
-		sample_freq <- list(...)$sample_freq
-	}
-
-	n_tests <- 1
-	if (hasArg(n_tests)) {
-		n_tests <- list(...)$n_tests
-	}
-
-	if (is.null(nsim_values)) {
-		# powers of two up to phylo
-		nsim_values <- Filter(function(x) log2(x)%%1==0, seq(2,2048))
-	}
-
-    if (is.null(Q)) {
-        # set a default Q matrix
-    	Q <- "empirical"
-    }
-
-    if (is.null(QS)) {
-        # set a default Q matrix
-    	QS <- matrix(c(-1,1,1,-1), 2, 2)
-    }
-
-    if (is.null(model)) {
-    	# 'ER' stands for equal rate. This model is related to the
-    	# definition of the Q matrix
-        model <- 'ER'
-    }
-
-    if (is.matrix(Q) && is.null(rownames(Q))) {
-        # set rownames and colnames for Q
-	    rownames(Q) <- colnames(Q) <- letters[1:nrow(Q)]
-    }
-
-    # simulate a pure birth tree and the character history
-    # use scale=1 to scale the tree to 1
-	tree <- pbtree(n=species, scale=1)
-	tree <- sim.history(tree, QS, message=FALSE)
-
- 	hist <- simulation.data(tree)
-
-	# init result
-	res_sfreemap <- NULL
-	res_simmap <- NULL
-
-	outdir_suffix <- format(Sys.time(), "%Y-%m-%d_%H:%M:%OS")
-	out_dir <- create_out_dir(dest_dir, species, Q, model, outdir_suffix)
-
-	for (sim_num in 1:n_tests) {
-		if (isTRUE(test_sfreemap)) {
-			if (isTRUE(message)) {
-				cat('Running sfreemap..\n')
-			}
-			res_sfreemap <- sfreemap.test.sfreemap(tree, Q, nsim_values, hist)
-			if (isTRUE(save_to_file)) {
-				out_file <- create_out_file(out_dir, 'sfreemap', sim_num)
-				write_to_file(tree, out_dir, out_file, hist, res_sfreemap)
-			}
-		}
-
-		if (isTRUE(test_simmap)) {
-			if (isTRUE(message)) {
-				cat('Running simmap..\n')
-			}
-			res_simmap <- sfreemap.test.simmap(tree, Q, pi, model, nsim_values, hist, sample_freq)
-			if (isTRUE(save_to_file)) {
-				out_file <- create_out_file(out_dir, 'simmap', sim_num)
-				write_to_file(tree, out_dir, out_file, hist, res_simmap)
+	r_idx <- 0
+	for (t in tree_seq) {
+		for (s in species_seq) {
+			for (q in q_size_seq) {
+				if (isTRUE(message)) {
+					cat('test', (r_idx+1), 'of', res_size)
+					cat(' (n_trees=', t
+						  ,', n_species=', s
+						  ,', q_size=', q
+						  ,'): ', sep='')
+				}
+				trees <- create_trees(t, s, q)
+				elapsed <- calc_time(trees, parallel, prog, n_tests)
+				data <- c(t, s, q, elapsed)
+				r_idx <- r_idx + 1
+				result[r_idx,] <- data
+				if (isTRUE(message)) {
+					cat (elapsed, 's\n', sep='')
+				}
 			}
 		}
 	}
 
-	return (list(sfreemap=res_sfreemap, simmap=res_simmap))
-}
-
-create_out_dir <- function(dest_dir, species, Q, model, outdir_suffix) {
-	q_txt <- ifelse(is.matrix(Q), 'matrix', Q)
-	out_dir <- paste(species, q_txt, model, outdir_suffix, sep='_')
-	out_dir <- paste(dest_dir, out_dir, sep='/')
-	dir.create(out_dir, showWarnings=FALSE)
-	return (out_dir)
-}
-
-create_out_file <- function(out_dir, method, sim_num) {
-	out_file <- paste(method, '_', sim_num, '.txt', sep='')
-	out_file <- paste(out_dir, out_file, sep='/')
-	return (out_file)
-}
-
-save_tree_file <- function(out_dir, tree) {
-	out_tree_file <- paste(out_dir, '/tree.nexus', sep='')
-	write.tree(tree, file=out_tree_file)
-	return (out_tree_file)
-}
-
-write_to_file <- function(tree, out_dir, out_file, hist, result) {
-
-	save_tree_file(out_dir, tree)
-
-	txt <- paste('# sim.history ', 0, hist$lmt, paste(hist$emr, collapse=' '))
-	write(txt, file=out_file)
-
-	txt <- paste('#',paste(colnames(result), collapse=','))
-	write(txt, file=out_file, append=TRUE)
-
-	write.table(result, file=out_file, row.names=FALSE, col.names=FALSE, append=TRUE)
-}
-
-sfreemap.test.sfreemap <- function(tree, Q, nsim_values, hist, sample_freq) {
-
-	result <- create_result_matrix(nsim_values)
-
-	for (nsim in nsim_values) {
-		t_start <- proc.time()
-		sm <- sfreemap.map(tree
-							, sample_freq=sample_freq
-			  			 	, Q=Q
-			  			 	, n_simulations=nsim
-						 	, rewards=rep(1,ncol(tree$node.states)))
-		t_elapsed <- proc.time() - t_start
-
-		mean <- sfreemap.describe(sm)
-
-		diff <- sfreemap.diff(hist, mean)
-		data <- c(nsim, t_elapsed[3], diff$lmt, diff$emr, mean$lmt, mean$emr[1], mean$emr[2])
-
-		result[as.character(nsim),] <- data
+	if (!is.null(file)) {
+		write_to_file(file, result)
 	}
+
 	return(result)
-
-}
-
-sfreemap.test.simmap <- function(tree, Q, pi, model, nsim_values, hist, sample_freq) {
-
-	result <- create_result_matrix(nsim_values)
-
-	for (nsim in nsim_values) {
-
-		t_start <- proc.time()
-		mtrees <- make.simmap(tree, tree$states, Q=Q, pi=pi, model=model, nsim=nsim, samplefreq=sample_freq, message=FALSE)
-		t_elapsed <- proc.time() - t_start
-
-		mean <- simmap.mean(mtrees)
-
-		diff <- sfreemap.diff(hist, mean)
-
-		data <- c(nsim, t_elapsed[3], diff$lmt, diff$emr, mean$lmt, mean$emr[1], mean$emr[2])
-
-		result[as.character(nsim),] <- data
-	}
-
-	return (result)
-}
-
-create_result_matrix <- function(nsim_values) {
-
-	# TODO: only works for two states, should work for any number
-	metric_values <- c("nsim", "time", "diff_lmt", "diff_emr", "transitions", "time_in_a", "time_in_b")
-	result <- matrix(0, nrow=length(nsim_values)
-			  , ncol=length(metric_values)
-			  , dimnames=list(nsim_values, metric_values))
-
-	return (result)
-
 }

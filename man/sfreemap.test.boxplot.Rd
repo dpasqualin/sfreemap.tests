@@ -1,8 +1,8 @@
-\name{sfreemap.test.box_and_whiskers}
-\alias{sfreemap.test.box_and_whiskers}
+\name{sfreemap.test.boxplot}
+\alias{sfreemap.test.boxplot}
 \title{Simulation free stochastic character maps on a phylogenetic tree}
 \usage{
-sfreemap.test.box_and_whiskers(species=100
+sfreemap.test.boxplot(species=100
 							   , Q='mcmc'
 							   , pi='equal'
 							   , model='ER'
