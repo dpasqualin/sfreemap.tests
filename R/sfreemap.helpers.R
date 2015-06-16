@@ -113,12 +113,9 @@ calc_time <- function(trees, parallel, prog, n_tests) {
     t_start <- proc.time()
     for (i in 1:n_tests) {
         if (prog == 'sfreemap') {
-            invisible(sfreemap.map(trees
-                                    , states
-                                    , Q='empirical'
-                                    , parallel=parallel))
+            sfreemap.map(trees, states, Q='empirical', parallel=parallel)
         } else if (prog == 'simmap') {
-            invisible(make.simmap(trees, states, Q='empirical'))
+            make.simmap(trees, states, Q='empirical')
         } else {
             stop('prog should be equal to sfreemap or simmap')
         }
