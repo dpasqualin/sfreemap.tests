@@ -110,17 +110,29 @@ calc_time <- function(trees, parallel, prog, n_tests) {
     } else {
         states <- trees[[1]]$states
     }
-    t_start <- proc.time()
+
+    doit <- function(expr) {
+        t_start <- proc.time()
+        expr
+        t_end <- proc.time()
+        return ((t_end-t_start)[3])
+    }
+
+    t_total <- 0.0
     for (i in 1:n_tests) {
         if (prog == 'sfreemap') {
-            sfreemap.map(trees, states, Q='empirical', parallel=parallel)
+            t_partial <- doit(sfreemap.map(trees, states, Q='empirical'
+                                , parallel=parallel))
         } else if (prog == 'simmap') {
-            make.simmap(trees, states, Q='empirical')
+            t_partial <- doit(make.simmap(trees, states, Q='empirical'))
         } else {
             stop('prog should be equal to sfreemap or simmap')
         }
+        t_total <- t_total + t_partial
     }
-    t_elapsed <- (proc.time() - t_start)[3]/n_tests
+
+    t_elapsed <- t_total/n_tests
+
     return(t_elapsed)
 }
 
