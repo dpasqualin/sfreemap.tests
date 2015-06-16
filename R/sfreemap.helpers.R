@@ -130,8 +130,8 @@ calc_time <- function(trees, parallel, prog, n_tests) {
 create_trees <- function(n_trees, n_species, q_size) {
     # Create Q
     QS <- matrix(1, nrow=q_size, ncol=q_size)
-    diag(QS) <- -sum(QS[1,])
-    rownames(QS)<-colnames(QS)<-letters[1:nrow(QS)]
+    diag(QS) <- -sum(QS[1,]) + 1
+    rownames(QS) <- colnames(QS) <- 1:nrow(QS)
 
     # Create topologies
     topologies <- pbtree(n=n_species, nsim=n_trees, scale=1)
