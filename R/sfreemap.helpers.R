@@ -146,13 +146,16 @@ create_trees <- function(n_trees, n_species, q_size, unique=FALSE) {
     if (isTRUE(unique)) {
         topologies <- pbtree(n=n_species, nsim=n_trees, scale=1)
         trees <- lapply(topologies, sim.history, Q=QS, message=FALSE)
-        if (n_trees > 1) {
-            class(trees) <- 'multiPhylo'
-        }
     } else {
         topology <- pbtree(n=n_species, nsim=1, scale=1)
-        tree <- sim.history(topology, Q=QS, message=FALSE)
-        trees <- rep(tree, n_trees)
+        trees <- sim.history(topology, Q=QS, message=FALSE)
+        if (n_trees > 1) {
+            trees <- rep(trees, n_trees)
+        }
+    }
+
+    if (n_trees > 1) {
+        class(trees) <- 'multiPhylo'
     }
 
     return(trees)
