@@ -136,19 +136,24 @@ calc_time <- function(trees, parallel, prog, n_tests) {
     return(t_elapsed)
 }
 
-create_trees <- function(n_trees, n_species, q_size) {
+create_trees <- function(n_trees, n_species, q_size, unique=FALSE) {
     # Create Q
     QS <- matrix(1, nrow=q_size, ncol=q_size)
     diag(QS) <- -sum(QS[1,]) + 1
     rownames(QS) <- colnames(QS) <- 1:nrow(QS)
 
     # Create topologies
-    topologies <- pbtree(n=n_species, nsim=n_trees, scale=1)
-    if (n_trees > 1) {
+    if (isTRUE(unique)) {
+        topologies <- pbtree(n=n_species, nsim=n_trees, scale=1)
         trees <- lapply(topologies, sim.history, Q=QS, message=FALSE)
-        class(trees) <- 'multiPhylo'
+        if (n_trees > 1) {
+            class(trees) <- 'multiPhylo'
+        }
     } else {
-        trees <- sim.history(topologies, QS, message=FALSE)
+        topology <- pbtree(n=n_species, nsim=1, scale=1)
+        tree <- sim.history(topology, Q=QS, message=FALSE)
+        trees <- rep(tree, n_trees)
     }
+
     return(trees)
 }
