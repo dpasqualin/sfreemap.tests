@@ -1,5 +1,6 @@
 export(simmap.mean, simulation.data, sfreemap.diff
-        , sfreemap.test.boxplot, sfreemap.test.perf)
+        , sfreemap.test.boxplot, sfreemap.test.perf
+        , create_trees)
 
 importFrom(sfreemap, sfreemap.describe, sfreemap.map)
 importFrom(ape, ace, plot.phylo)

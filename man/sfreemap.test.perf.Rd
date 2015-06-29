@@ -5,7 +5,8 @@
 sfreemap.test.perf(tree_seq, species_seq, q_size_seq
 								, n_tests=5, parallel=TRUE
 								, prog='sfreemap'
-								, message=TRUE)
+								, message=TRUE
+                                , file=NULL)
 }
 \arguments{
     \item{tree_seq}{trololo}
@@ -15,6 +16,7 @@ sfreemap.test.perf(tree_seq, species_seq, q_size_seq
     \item{parallel}{trololo}
     \item{prog}{trololo}
 	\item{message}{trololo}
+	\item{file}{trololo}
 
 }
 \description{
