@@ -104,7 +104,16 @@ create_result_matrix <- function(n) {
 	return (result)
 }
 
-calc_time <- function(trees, parallel, prog, n_tests) {
+remove_outliers <- function(x, na.rm = TRUE, ...) {
+  qnt <- quantile(x, probs=c(.25, .75), na.rm = na.rm, ...)
+  H <- 1.5 * IQR(x, na.rm = na.rm)
+  y <- x
+  y[x < (qnt[1] - H)] <- NA
+  y[x > (qnt[2] + H)] <- NA
+  y[!y %in% NA]
+}
+
+calc_time <- function(trees, parallel, prog, n_tests, remove_outliers=TRUE) {
     if (class(trees)=='phylo') {
         states <- trees$states
     } else {
@@ -118,20 +127,28 @@ calc_time <- function(trees, parallel, prog, n_tests) {
         return ((t_end-t_start)[3])
     }
 
-    t_total <- 0.0
+    values <- rep(0,n_tests)
+
     for (i in 1:n_tests) {
         if (prog == 'sfreemap') {
-            t_partial <- doit(sfreemap.map(trees, states, Q='empirical'
+            t <- doit(sfreemap.map(trees, states, Q='empirical'
+                                , parallel=parallel))
+        } else if (prog == 'sfreemapc') {
+            t <- doit(sfreemapc::sfreemap.map(trees, states, Q='empirical'
                                 , parallel=parallel))
         } else if (prog == 'simmap') {
-            t_partial <- doit(make.simmap(trees, states, Q='empirical'))
+            t <- doit(make.simmap(trees, states, Q='empirical'))
         } else {
-            stop('prog should be equal to sfreemap or simmap')
+            stop('valid for "prog": (simmap|sfreemap|sfreemapc)')
         }
-        t_total <- t_total + t_partial
+        values[i] <- t
     }
 
-    t_elapsed <- t_total/n_tests
+    if (isTRUE(remove_outliers)) {
+        values <- remove_outliers(values)
+    }
+
+    t_elapsed <- mean(values)
 
     return(t_elapsed)
 }

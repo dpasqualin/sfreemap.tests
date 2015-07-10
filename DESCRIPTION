@@ -5,6 +5,7 @@ Title: Tests for Sfreemap, the Simulation Free Stochastic Mapping
 Author: Diego G. Pasqualin
 Maintainer: Diego G. Pasqualin <dpasqualin@inf.ufpr.br>
 Depends: R (>= 2.10), sfreemap (>= 0.0.1), ape (>= 3.0-10), phytools (>= 0.3-93)
+Suggests: sfreemapc (>= 0.0.1)
 ZipData: no
 Description: A test suite for the Sfreemap package.
 License: GPL (>= 2)
