@@ -131,7 +131,7 @@ calc_time <- function(trees, parallel, prog, n_tests, remove_outliers=TRUE) {
 
     for (i in 1:n_tests) {
         if (prog == 'sfreemap') {
-            t <- doit(sfreemap.map(trees, states, Q='empirical'
+            t <- doit(sfreemap::sfreemap.map(trees, states, Q='empirical'
                                 , parallel=parallel))
         } else if (prog == 'sfreemapc') {
             t <- doit(sfreemapc::sfreemap.map(trees, states, Q='empirical'
