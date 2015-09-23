@@ -17,6 +17,7 @@ run <- function(trees, taxa, q, parallel, criteria) {
         }
         output <- paste(p, criteria, type, 'txt', sep='.')
         sfreemap.test.perf(trees, taxa, q,
+                            , prog=p
                             , parallel=parallel
                             , n_tests=n_tests
                             , file=output)
@@ -47,3 +48,5 @@ trees <- 1
 q <- 4
 taxa <- seq(32,1024,32)
 run(trees, taxa, q, FALSE, 'taxa')
+
+print("DONE")
