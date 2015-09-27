@@ -3,23 +3,21 @@
 \title{Simulation free stochastic character maps on a phylogenetic tree}
 \usage{
 sfreemap.test.perf(tree_seq, species_seq, q_size_seq
-								, n_tests=5
-                                , n_sim=1
-                                , parallel=TRUE
-								, prog='sfreemap'
-								, message=TRUE
-                                , file=NULL)
+                           , n_sim_seq=c(1), omp=FALSE
+                           , n_tests=5, parallel=TRUE, prog='sfreemap'
+                           , message=TRUE, file=NULL)
 }
 \arguments{
     \item{tree_seq}{trololo}
     \item{species_seq}{trololo}
     \item{q_size_seq}{trololo}
+    \item{n_sim_seq}{trololo}
+    \item{omp}{trololo}
     \item{n_tests}{trololo}
-    \item{n_sim}{trololo}
     \item{parallel}{trololo}
     \item{prog}{trololo}
-	\item{message}{trololo}
-	\item{file}{trololo}
+    \item{message}{trololo}
+    \item{file}{trololo}
 
 }
 \description{
