@@ -96,7 +96,7 @@ write_to_file <- function(out_file, result, tree=NULL, out_dir=NULL
 create_result_matrix <- function(n) {
 
 	# TODO: only works for two states, should work for any number
-	metric_values <- c("n_trees", "n_species", "q_size", "time")
+	metric_values <- c("n_trees", "n_species", "q_size", "time", "nsim")
 	result <- matrix(0, nrow=n
 			  , ncol=length(metric_values)
 			  , dimnames=list(1:n, metric_values))
@@ -113,11 +113,17 @@ remove_outliers <- function(x, na.rm = TRUE, ...) {
   y[!y %in% NA]
 }
 
-calc_time <- function(trees, parallel, prog, n_tests, remove_outliers=TRUE) {
+calc_time <- function(trees, parallel, prog, n_tests, n_sim, omp, remove_outliers=TRUE) {
     if (class(trees)=='phylo') {
         states <- trees$states
     } else {
         states <- trees[[1]]$states
+    }
+
+    if (isTRUE(omp)) {
+        omp <- detectCores()
+    } else {
+        omp <- 1
     }
 
     doit <- function(expr) {
@@ -135,9 +141,10 @@ calc_time <- function(trees, parallel, prog, n_tests, remove_outliers=TRUE) {
                                 , parallel=parallel))
         } else if (prog == 'sfreemapc') {
             t <- doit(sfreemapc::sfreemap.map(trees, states, Q='empirical'
-                                , parallel=parallel))
+                                , parallel=parallel, omp=omp))
         } else if (prog == 'simmap') {
-            t <- doit(make.simmap(trees, states, Q='empirical'))
+            t <- doit(make.simmap(trees, states, Q='empirical'
+                                  , nsim=n_sim, message=FALSE))
         } else {
             stop('valid for "prog": (simmap|sfreemap|sfreemapc)')
         }
@@ -173,6 +180,8 @@ create_trees <- function(n_trees, n_species, q_size, unique=FALSE) {
 
     if (n_trees > 1) {
         class(trees) <- 'multiPhylo'
+    } else {
+        class(trees) <- 'phylo'
     }
 
     return(trees)
