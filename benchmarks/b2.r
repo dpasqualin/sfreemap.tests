@@ -2,12 +2,10 @@
 # performance test for simmap in different number of simulations and states
 
 require(sfreemap.tests)
-require(sfreemap)
-require(sfreemapc)
+require(phytools)
 
-
-n_sim <- seq(20,200,20)
-q <- seq(2,10,2)
+n_sim <- c(20,50,100,150,200)
+q <- seq(12,20,2)
 n_testes <- 5
 
 output <- paste('simmap', 'nsim', 'serial', 'txt', sep='.')
