@@ -44,12 +44,22 @@ create_info_file <- function(out_dir, ...) {
 	}
 }
 
-plot_boxplot <- function(out_dir, out_file, formula, data, xlab, ylab, title, line_data) {
+plot_boxplot <- function(out_dir, out_file, data, y, xlabel, ylabel, line_data) {
+
+    data <- data.frame(data)
 
 	output <- paste(out_dir, out_file, sep='/')
-	png(output, width=1280, height=720)
-	boxplot(formula, data=data, xlab=xlab, ylab=ylab, las=2, main=title)
-	abline(h=line_data, col='red')
+
+	png(output, width=1024, height=768)
+    p <- ggplot(data, aes_string(x='factor(generation)', y=y)) +
+            theme_bw(base_size=26) +
+            geom_boxplot() +
+            xlab(xlabel) +
+            ylab(ylabel) +
+            theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+            theme(axis.title.y=element_text(vjust=1.8)) +
+            geom_hline(yintercept=line_data, color='red')
+    print(p)
 	dev.off()
 
 }
