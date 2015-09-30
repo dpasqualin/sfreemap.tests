@@ -3,29 +3,27 @@
 \title{Simulation free stochastic character maps on a phylogenetic tree}
 \usage{
 sfreemap.test.boxplot(species=100
-							   , Q='mcmc'
-							   , pi='equal'
-							   , model='ER'
-							   , trees=NULL
-                               , n_trees=1
-							   , nsim=50
-							   , n_tests=5
-							   , sample_freq=100
-							   , save_to_file=TRUE
-			  				   , ...)
+                        , Q_simmap='mcmc'
+                        , Q_sfreemap='empirical'
+					    , trees=NULL
+                       	, n_trees=1
+					    , nsim=50
+				        , n_tests=5
+					    , sample_freq=100
+					    , save_to_file=TRUE
+	  				    , ...)
 }
 \arguments{
-    \item{species}{the number of species in the simulated phylogeny}
-	\item{Q}{The transition matrix}
-	\item{pi}{whatever}
-	\item{model}{The evolution model}
-	\item{trees}{The trees to test on. Leave it NULL to test with a single random tree}
+    \item{species}{The number of species in the simulated phylogeny}
+    \item{Q_mcmc}{The transition rate matrix for simmap}
+	\item{Q_sfreemap}{The transition rate matrix for sfreemap}
+	\item{trees}{The trees to test on. Leave it NULL to test with random trees}
 	\item{n_trees}{When trees=NULL you can choose how many random trees to
     generate}
-    \item{nsim}{number of trees generated}
-    \item{n_tests}{number of tests, used to calculate the mean per sample}
+    \item{nsim}{...}
+    \item{n_tests}{number of tests to run, used to calculate the average}
     \item{sample_freq}{the frequency of samples taken form the markov chain}
-    \item{save_to_file}{whether to save the results into a file}
+    \item{save_to_file}{a boolean indicating whether to save the results into a file}
     \item{...}{more}
 }
 \description{
