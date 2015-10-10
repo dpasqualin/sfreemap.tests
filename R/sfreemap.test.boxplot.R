@@ -63,7 +63,12 @@ sfreemap.test.boxplot <- function(species=128
                 v <- simmap.mean(mtrees[start:end])
             }
             diff <- sfreemap.diff(hist, v)
-            row <- c(i*sample_freq, diff$lmt, diff$emr, v$lmt, v$emr[1], v$emr[2])
+            if (Q_simmap == 'mcmc') {
+                step <- i*sample_freq
+            } else {
+                step <- i
+            }
+            row <- c(step, diff$lmt, diff$emr, v$lmt, v$emr[1], v$emr[2])
             idx <- ((sim_num-1) * nsim) + i
             simmap_result[as.character(idx),] <- row
         }
