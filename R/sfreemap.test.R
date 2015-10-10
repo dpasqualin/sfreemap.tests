@@ -39,3 +39,30 @@ sfreemap.test.perf <- function(tree_seq, species_seq, q_size_seq
 
     return(result)
 }
+
+simmap.plot_tree <- function(trees, nsim, samplefreq=100) {
+    if (is.null(trees[[1]]$maps)) {
+        # calculate first and than plot
+    }
+
+    total <- length(trees)/nsim
+    mean_trees <- list()
+    for (i in 1:total) {
+        t <- trees[[i]]
+        range <- ((i-1)*nsim+1) : (i*nsim)
+        # remember that t$maps will be wrong here, but it's ok because we
+        # don't need it here
+        mapped.edge <- lapply(trees[range], function(x) x$mapped.edge)
+        t$mapped.edge <- Reduce('+', mapped.edge) / length(mapped.edge)
+        mean_trees[[i]] <- t
+    }
+    class(mean_trees) <- 'multiPhylo'
+
+    base_tree <- mean_trees[[1]]
+    return(mean_trees)
+    for (state in colnames(base_tree$mapped.edge)) {
+        cat('plotting for state ', state, '\n')
+        x11()
+        sfreemapc::sfreemap.plot_tree(base_tree, mean_trees, state)
+    }
+}
