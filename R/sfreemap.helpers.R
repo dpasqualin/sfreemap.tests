@@ -22,14 +22,42 @@ sfreemap.diff <- function(a, b) {
 }
 
 simmap.mean <- function(mtrees) {
-    if (class(mtrees) == 'multiPhylo') {
-        mean_emr <- apply(sapply(mtrees, function(x) { apply(x$mapped.edge,2,sum)}), 1, mean)
+    if ('multiPhylo' %in% class(mtrees)) {
+        mean_emr <- rowMeans(sapply(mtrees, function(x) colSums(x$mapped.edge)))
         mean_lmt <- colMeans((countSimmap(mtrees,message=FALSE)))[1]
     } else {
-        mean_emr <- apply(mtrees$mapped.edge,2,sum)
+        mean_emr <- colSums(mtrees$mapped.edge)
         mean_lmt <- countSimmap(mtrees)$N
     }
     return (list(lmt=mean_lmt, emr=mean_emr))
+}
+
+simmap.calc_simulations_evolution <- function(trees, nsim, plot=FALSE) {
+    data <- matrix(NA, nrow=length(trees), ncol=2)
+    tmean <- simmap.mean(trees[[1]])$emr
+    data[1,] <- c(1, 0)
+    for (i in 2:length(trees)) {
+        emr <- colSums(trees[[i]]$mapped.edge)
+        diff <- sum(abs(emr - tmean))
+        data[i,] <- c(i, diff)
+        tmean <- simmap.mean(trees[1:i])$emr
+    }
+    data <- data.frame(data)
+    colnames(data) <- c('iteration', 'diff')
+
+    if (isTRUE(plot)) {
+        breaks <- data$iteration
+        p <- ggplot(data, aes(x=iteration, y=diff)) +
+                geom_line() +
+                scale_x_continuous(breaks=breaks) +
+                theme_bw(base_size=26) +
+                xlab('Tree number') +
+                ylab('Distance to mean') +
+                theme(axis.title.y=element_text(vjust=1.8))
+        print(p)
+    }
+
+    return(data)
 }
 
 simmap.mean_tree <- function(trees, nsim, samplefreq=100) {
