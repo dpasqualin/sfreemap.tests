@@ -32,6 +32,29 @@ simmap.mean <- function(mtrees) {
     return (list(lmt=mean_lmt, emr=mean_emr))
 }
 
+simmap.mean_tree <- function(trees, nsim, samplefreq=100) {
+    if (is.null(trees[[1]]$maps)) {
+        # calculate first and than plot
+    }
+
+    total <- length(trees)/nsim
+    mean_trees <- list()
+    for (i in 1:total) {
+        start <- ((i-1)*nsim+1)
+        end <- (i*nsim)
+        range <- start : end
+        t <- trees[[start]]
+        # remember that t$maps will be wrong here, but it's ok because we
+        # don't need it here
+        mapped.edge <- lapply(trees[range], function(x) x$mapped.edge)
+        t$mapped.edge <- Reduce('+', mapped.edge) / length(mapped.edge)
+        mean_trees[[i]] <- t
+    }
+    class(mean_trees) <- 'multiPhylo'
+
+    return(mean_trees)
+}
+
 # print all arguments to a file
 create_info_file <- function(out_dir, ...) {
 	args <- list(...)
