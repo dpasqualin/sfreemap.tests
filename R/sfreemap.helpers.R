@@ -32,7 +32,10 @@ simmap.mean <- function(mtrees) {
     return (list(lmt=mean_lmt, emr=mean_emr))
 }
 
-simmap.calc_simulations_evolution <- function(trees, nsim, plot=FALSE) {
+# This function is suppose to test whether more simulations means more accuracy
+# on simmap. The results are a bit odd, maybe I'm not thinking right about
+# how to compute this. Need revision..
+simmap.calc_simulations_evolution <- function(trees, plot=FALSE) {
     data <- matrix(NA, nrow=length(trees), ncol=2)
     tmean <- simmap.mean(trees[[1]])$emr
     data[1,] <- c(1, 0)
@@ -60,27 +63,55 @@ simmap.calc_simulations_evolution <- function(trees, nsim, plot=FALSE) {
     return(data)
 }
 
-simmap.mean_tree <- function(trees, nsim, samplefreq=100) {
-    if (is.null(trees[[1]]$maps)) {
-        # calculate first and than plot
+# return t1 only with tips that are in t2 too
+# optionally reroot at node 'reroot'
+sfreemap.pruning <- function(t1, t2, reroot=NULL) {
+    tips_to_remove <- t1$tip.label[!t1$tip.label %in% t2$tip.label]
+    t <- drop.tip(t1, tips_to_remove)
+    if (!is.null(reroot)) {
+        if (reroot %in% t$tip.label) {
+            t <- root(t, reroot)
+        } else {
+            msg <- paste('trying to root tree but tip', reroot, 'doesn\'t exist')
+            stop(msg)
+        }
     }
+    return(t)
+}
 
-    total <- length(trees)/nsim
-    mean_trees <- list()
-    for (i in 1:total) {
+# This function calculates the "mean tree", in other words, the mean value
+# for dwelling times on states of a multiPhylo object.
+map.reduce <- function(trees, unique_trees, nsim, type='mean', samplefreq=100) {
+    reduced_trees <- list()
+    for (i in 1:unique_trees) {
         start <- ((i-1)*nsim+1)
         end <- (i*nsim)
         range <- start : end
         t <- trees[[start]]
-        # remember that t$maps will be wrong here, but it's ok because we
-        # don't need it here
+        states <- colnames(t$mapped.edge)
         mapped.edge <- lapply(trees[range], function(x) x$mapped.edge)
-        t$mapped.edge <- Reduce('+', mapped.edge) / length(mapped.edge)
-        mean_trees[[i]] <- t
+        if (type == 'mean') {
+            t$mapped.edge <- Reduce('+', mapped.edge) / length(mapped.edge)
+        } else if (type == 'median') {
+            reduced <- Reduce(cbind, mapped.edge)
+            for (state in states) {
+                tmp <- reduced[,colnames(reduced)==state]
+                t$mapped.edge[,state] <- apply(tmp, 1, median)
+            }
+        } else {
+            stop('unrecognized type, we only know mean and median')
+        }
+        reduced_trees[[i]] <- t
     }
-    class(mean_trees) <- 'multiPhylo'
 
-    return(mean_trees)
+    if (length(reduced_trees) > 1) {
+        class(reduced_trees) <- 'multiPhylo'
+    } else {
+        reduced_trees <- reduced_trees[[1]]
+        class(reduced_trees) <- 'phylo'
+    }
+
+    return(reduced_trees)
 }
 
 # print all arguments to a file
