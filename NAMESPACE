@@ -1,10 +1,10 @@
 export(simmap.mean, simulation.data, sfreemap.diff
         , sfreemap.test.boxplot, sfreemap.test.perf
-        , create_trees, map.reduce, sfreemap.plot_correlation
+        , create_trees, sfreemap.reduce, sfreemap.correlation
         , sfreemap.pruning, simmap.calc_simulations_evolution)
 
 importFrom(sfreemap, sfreemap.describe, sfreemap.map)
-importFrom(ape, ace, plot.phylo)
+importFrom(ape, ace, plot.phylo, all.equal.phylo)
 importFrom(ape, read.tree, reorder.phylo, write.tree)
 importFrom(phytools, countSimmap, pbtree, make.simmap, sim.history)
 importFrom(parallel, detectCores)

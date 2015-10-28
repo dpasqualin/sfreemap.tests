@@ -1,7 +1,50 @@
 # TODO: just starting this function, not sure if it sue be here or in
 # sfreemap.tests package.
 # Based on the plot found in http://www.inside-r.org/r-doc/graphics/pairs
-sfreemap.plot_correlation <- function(sfreemap_empirical, sfreemap_mcmc, simmap_empirical, simmap_mcmc, state='1') {
+sfreemap.correlation <- function(state='1') {
+    data <- list(
+        state = state
+        , data = NULL
+        , color = NULL
+    )
+
+    class(data) <- append(class(data), 'sfreemap.correlation')
+    return(data)
+}
+
+add.data <- function(obj, map, name) {
+    UseMethod('add.data', obj)
+}
+add.data.sfreemap.correlation <- function(obj, map, name) {
+
+    data <- matrix(map$mapped.edge[,obj$state], ncol=1)
+    colnames(data) <- name
+    rownames(obj$data) <- NULL
+
+    if (is.null(obj$data)) {
+        obj$data <- data
+    } else {
+        obj$data <- cbind(obj$data, data)
+    }
+
+    if (is.null(obj$color)) {
+        # add color information
+        nodes <- rownames(map$mapped.edge)
+        nodes <- sapply(strsplit(nodes, ','), function(x) x[2])
+        tip_label <- color <- map$tip.label[as.numeric(nodes)]
+        color[is.na(tip_label)] <- 'grey'
+        color[!is.na(tip_label)] <- 'green'
+        obj$color <- color
+    }
+
+    return(obj)
+}
+
+plot <- function(obj) {
+    UseMethod('plot', obj)
+}
+plot.sfreemap.correlation <- function(obj) {
+
     # panel.smooth function is built in.
     # panel.cor puts correlation in upper panels, size proportional to correlation
     # from: http://www.r-bloggers.com/scatterplot-matrices-in-r/
@@ -19,7 +62,6 @@ sfreemap.plot_correlation <- function(sfreemap_empirical, sfreemap_mcmc, simmap_
     # add histogram on the diagonals
     # from: https://stat.ethz.ch/R-manual/R-devel/library/graphics/html/pairs.html
     panel.hist <- function(x, ...) {
-        print(x)
         usr <- par("usr")
         on.exit(par(usr))
         par(usr = c(usr[1:2], 0, 1.5))
@@ -31,33 +73,20 @@ sfreemap.plot_correlation <- function(sfreemap_empirical, sfreemap_mcmc, simmap_
         rect(breaks[-nB], 0, breaks[-1], y, col = "grey", ...)
     }
 
-    # build data.frame
-    data <- cbind(sfreemap_empirical$mapped.edge[,state]
-                    , sfreemap_mcmc$mapped.edge[,state]
-                    , simmap_empirical$mapped.edge[,state]
-                    , simmap_mcmc$mapped.edge[,state])
-    rownames(data) <- NULL
-    colnames(data) <- c('sfreemap_empirical', 'sfreemap_mcmc'
-                        , 'simmap_empirical', 'simmap_mcmc')
-    data <- data.frame(data, stringsAsFactors=FALSE)
+    data <- data.frame(obj$data, stringsAsFactors=FALSE)
 
-    # add color information to it
-    nodes <- as.numeric(sapply(strsplit(rownames(a), ','), function(x) x[2]))
-    nodes <- tmp <- sfreemap_empirical$tip.label[nodes]
-    nodes[is.na(tmp)] <- 'grey'
-    nodes[!is.na(tmp)] <- 'green'
-    data$color <- nodes
+    # build formula
+    formula <- paste('~', paste(colnames(data), collapse='+'))
+    formula <- as.formula(formula)
 
     # package car has a scatterplotMatrix function that can print things like
     # an ellipse showing 95% confidence level, but I'm not sure it this fits
     # here. https://cran.r-project.org/web/packages/car/car.pdf
-    pairs(~ sfreemap_empirical + sfreemap_mcmc + simmap_empirical + simmap_mcmc
+    pairs(formula
         , data=data
         , pch = 21
-        , bg = data$color
+        , bg = obj$color
         , upper.panel=panel.cor
         , diag.panel=panel.hist
     )
-
-    return(data)
 }
