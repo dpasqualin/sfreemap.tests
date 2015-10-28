@@ -81,27 +81,52 @@ sfreemap.pruning <- function(t1, t2, reroot=NULL) {
 
 # This function calculates the "mean tree", in other words, the mean value
 # for dwelling times on states of a multiPhylo object.
-map.reduce <- function(trees, unique_trees, nsim, type='mean', samplefreq=100) {
+sfreemap.reduce <- function(trees, type='mean') {
     reduced_trees <- list()
-    for (i in 1:unique_trees) {
-        start <- ((i-1)*nsim+1)
-        end <- (i*nsim)
-        range <- start : end
-        t <- trees[[start]]
-        states <- colnames(t$mapped.edge)
-        mapped.edge <- lapply(trees[range], function(x) x$mapped.edge)
-        if (type == 'mean') {
-            t$mapped.edge <- Reduce('+', mapped.edge) / length(mapped.edge)
-        } else if (type == 'median') {
-            reduced <- Reduce(cbind, mapped.edge)
-            for (state in states) {
-                tmp <- reduced[,colnames(reduced)==state]
-                t$mapped.edge[,state] <- apply(tmp, 1, median)
-            }
-        } else {
-            stop('unrecognized type, we only know mean and median')
+
+    start_idx <- 1
+    end_idx <- 0
+    cont <- 1
+
+    keep_going <- function(t, start, end) {
+        return (length(t) > end_idx && all.equal.phylo(t[[start]], t[[end]]))
+    }
+
+    while (TRUE) {
+
+        while (keep_going(trees, start_idx, end_idx+1)) {
+            end_idx <- end_idx + 1
         }
-        reduced_trees[[i]] <- t
+
+        range <- start_idx:end_idx
+        current_set <- trees[range]
+        base_tree <- current_set[[1]]
+
+        if (length(range) > 1) {
+            states <- colnames(base_tree$mapped.edge)
+            mapped.edge <- lapply(current_set, function(x) x$mapped.edge)
+
+            if (type == 'mean') {
+                base_tree$mapped.edge <- Reduce('+', mapped.edge) / length(mapped.edge)
+            } else if (type == 'median') {
+                reduced <- Reduce(cbind, mapped.edge)
+                for (state in states) {
+                    tmp <- reduced[,colnames(reduced)==state]
+                    base_tree$mapped.edge[,state] <- apply(tmp, 1, median)
+                }
+            } else {
+                stop('unrecognized type, we only know mean and median')
+            }
+        }
+
+        reduced_trees[[cont]] <- base_tree
+
+        if (length(trees) == end_idx) {
+            break
+        } else {
+            start_idx <- end_idx + 1
+            cont <- cont + 1
+        }
     }
 
     if (length(reduced_trees) > 1) {
