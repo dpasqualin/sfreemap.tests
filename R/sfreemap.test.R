@@ -30,7 +30,7 @@ sfreemap.test.perf <- function(tree_seq, species_seq, q_size_seq
                         r_idx <- r_idx + 1
                     }
 
-                    if (isTRUE(parallel)) {
+                    if (isTRUE(parallel) && prog!='simmap') {
                         elapsed <- calc_time(trees, TRUE, prog, n_tests, n)
                         data <- c(t, s, q, elapsed, n, 'parallel')
                         result[r_idx,] <- data
