@@ -4,7 +4,7 @@ Date: 2014-03-23
 Title: Tests for Sfreemap, the Simulation Free Stochastic Mapping
 Author: Diego G. Pasqualin
 Maintainer: Diego G. Pasqualin <dpasqualin@inf.ufpr.br>
-Depends: R (>= 2.10), sfreemap (>= 0.0.1), ape (>= 3.0-10), phytools (>= 0.5.1), parallel (>= 3.2.1), ggplot2(>= 1.0.1)
+Depends: R (>= 2.10), sfreemap (>= 0.0.1), ape (>= 3.0-10), phytools (>= 0.5.0), parallel (>= 3.2.1), ggplot2(>= 1.0.1)
 Suggests: sfreemapc (>= 0.0.1)
 ZipData: no
 Description: A test suite for the Sfreemap package.

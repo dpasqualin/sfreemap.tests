@@ -1,6 +1,6 @@
 export(simmap.mean, simulation.data, sfreemap.diff
         , sfreemap.test.boxplot, sfreemap.test.perf
-        , create_trees, sfreemap.reduce, sfreemap.correlation
+        , create_trees, sfreemap.reduce
         , sfreemap.pruning, simmap.calc_simulations_evolution)
 
 importFrom(sfreemap, sfreemap.describe, sfreemap.map)

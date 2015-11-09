@@ -207,13 +207,13 @@ write_to_file <- function(out_file, result, tree=NULL, out_dir=NULL
 	txt <- paste('#',paste(colnames(result), collapse=','))
 	write(txt, file=out_file, append=TRUE)
 
-	write.table(result, file=out_file, row.names=FALSE, col.names=FALSE, append=TRUE)
+	write.table(result, file=out_file, row.names=FALSE, col.names=FALSE, append=TRUE, quote=FALSE)
 }
 
 create_result_matrix <- function(n) {
 
 	# TODO: only works for two states, should work for any number
-	metric_values <- c("n_trees", "n_species", "q_size", "time", "nsim")
+	metric_values <- c("n_trees", "n_species", "q_size", "time", "nsim", "mode")
 	result <- matrix(0, nrow=n
 			  , ncol=length(metric_values)
 			  , dimnames=list(1:n, metric_values))
@@ -230,17 +230,12 @@ remove_outliers <- function(x, na.rm = TRUE, ...) {
   y[!y %in% NA]
 }
 
-calc_time <- function(trees, parallel, prog, n_tests, n_sim, omp, remove_outliers=TRUE) {
+calc_time <- function(trees, parallel, prog, n_tests, n_sim, remove_outliers=TRUE) {
+
     if (class(trees)=='phylo') {
         states <- trees$states
     } else {
         states <- trees[[1]]$states
-    }
-
-    if (isTRUE(omp)) {
-        omp <- detectCores()
-    } else {
-        omp <- 1
     }
 
     doit <- function(expr) {
@@ -250,18 +245,15 @@ calc_time <- function(trees, parallel, prog, n_tests, n_sim, omp, remove_outlier
         return ((t_end-t_start)[3])
     }
 
-    values <- rep(0,n_tests)
+    values <- rep(0, n_tests)
 
     for (i in 1:n_tests) {
         if (prog == 'sfreemap') {
-            t <- doit(sfreemap::sfreemap.map(trees, states, Q='empirical'
-                                , parallel=parallel))
+            t <- doit(sfreemap::sfreemap.map(trees, states, Q='empirical', parallel=parallel))
         } else if (prog == 'sfreemapc') {
-            t <- doit(sfreemapc::sfreemap.map(trees, states, Q='empirical'
-                                , parallel=parallel, omp=omp))
+            t <- doit(sfreemapc::sfreemap.map(trees, states, method='empirical', type='standard', parallel=parallel))
         } else if (prog == 'simmap') {
-            t <- doit(make.simmap(trees, states, Q='empirical'
-                                  , nsim=n_sim, message=FALSE))
+            t <- doit(make.simmap(trees, states, Q='empirical', nsim=n_sim, message=FALSE))
         } else {
             stop('valid for "prog": (simmap|sfreemap|sfreemapc)')
         }
