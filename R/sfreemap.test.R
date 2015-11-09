@@ -25,7 +25,7 @@ sfreemap.test.perf <- function(tree_seq, species_seq, q_size_seq
                         data <- c(t, s, q, elapsed, n, 'serial')
                         result[r_idx,] <- data
                         if (isTRUE(message)) {
-                            print_info(r_idx, res_size, elapsed, t, s, q, n, "serial")
+                            print_info(prog, r_idx, res_size, elapsed, t, s, q, n, "serial")
                         }
                         r_idx <- r_idx + 1
                     }
@@ -35,7 +35,7 @@ sfreemap.test.perf <- function(tree_seq, species_seq, q_size_seq
                         data <- c(t, s, q, elapsed, n, 'parallel')
                         result[r_idx,] <- data
                         if (isTRUE(message)) {
-                            print_info(r_idx, res_size, elapsed, t, s, q, n, "parallel")
+                            print_info(prog, r_idx, res_size, elapsed, t, s, q, n, "parallel")
                         }
                         r_idx <- r_idx + 1
                     }
@@ -51,13 +51,14 @@ sfreemap.test.perf <- function(tree_seq, species_seq, q_size_seq
     return(result)
 }
 
-print_info <- function(r_idx, res_size, elapsed, t, s, q, n, mode) {
+print_info <- function(prog, r_idx, res_size, elapsed, t, s, q, n, mode) {
     cat('test', (r_idx), 'of', res_size)
-    cat(' (n_trees=', t
+    cat(' (prog=', prog
+          ,', n_trees=', t
           ,', n_species=', s
           ,', q_size=', q
           ,', n_sim=', n
-          ,', mode=parallel'
+          ,', mode=', mode
           ,'):', sep='')
     cat(' ', elapsed, 's\n', sep='')
 }
