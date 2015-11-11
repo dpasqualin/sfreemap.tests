@@ -8,13 +8,16 @@ require(sfreemapc)
 progs = c('sfreemap', 'sfreemapc', 'simmap')
 n_tests = 7
 
-run <- function(trees, taxa, q, criteria) {
+run <- function(trees, taxa, q, criteria, nsim=c(1)) {
     for (p in progs) {
+        parallel <- ifelse(prog=='simmap', FALSE, TRUE)
         output <- paste(p, criteria, 'txt', sep='.')
         sfreemap.test.perf(trees
                             , taxa
                             , q
+                            , nsim
                             , prog=p
+                            , parallel=parallel
                             , n_tests=n_tests
                             , file=output)
     }
