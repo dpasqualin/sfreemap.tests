@@ -2,7 +2,7 @@ simulation.data <- function(tree) {
     # the order of columns created by the sim.history might be different
     # from what simmap and sfreemap expect.
 
-    if (class(tree) == 'phylo') {
+    if (inherits(tree, 'phylo')) {
         fix_order <- tree$mapped.edge[,order(colnames(tree$mapped.edge))]
         lmt <- countSimmap(tree)$N
         emr <- apply(fix_order, 2, sum)
@@ -22,7 +22,7 @@ sfreemap.diff <- function(a, b) {
 }
 
 simmap.mean <- function(mtrees) {
-    if ('multiPhylo' %in% class(mtrees)) {
+    if (inherits(mtrees, 'multiPhylo')) {
         mean_emr <- rowMeans(sapply(mtrees, function(x) colSums(x$mapped.edge)))
         mean_lmt <- colMeans((countSimmap(mtrees,message=FALSE)))[1]
     } else {
@@ -232,7 +232,7 @@ remove_outliers <- function(x, na.rm = TRUE, ...) {
 
 calc_time <- function(trees, parallel, prog, n_tests, n_sim, remove_outliers=TRUE) {
 
-    if (class(trees)=='phylo') {
+    if (inherits(trees, 'phylo')) {
         states <- trees$states
     } else {
         states <- trees[[1]]$states
