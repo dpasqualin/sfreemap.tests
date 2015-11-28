@@ -39,4 +39,16 @@ just_do_it <- function() {
 
     plot_comparison(x, "Número de estados do caráter", output='/tmp/states_serial.png')
 
+
+    # ----------------------------------------------------------
+    x <- list(
+        files=c('sfreemapc.trees.txt', 'sfreemapc.trees.txt'),
+        types=c('tree', 'tree'),
+        mode=c('serial', 'parallel'),
+        legend=c('Serial', 'Paralelo')
+    )
+
+    plot_comparison(x, "Número de estados do caráter", output='/tmp/trees_parallel.png')
+
+
 }
