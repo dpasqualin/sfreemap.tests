@@ -9,3 +9,7 @@ importFrom(ape, read.tree, reorder.phylo, write.tree)
 importFrom(phytools, countSimmap, pbtree, make.simmap, sim.history)
 importFrom(parallel, detectCores)
 importFrom(graphics, pairs)
+
+importFrom(ggplot2, ggplot, scale_alpha_discrete, scale_fill_discrete, aes
+                  , geom_bar, ggtitle, theme, element_text, xlab, ylab
+                  , scale_x_continuous, aes_string, geom_histogram)
