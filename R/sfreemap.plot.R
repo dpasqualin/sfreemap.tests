@@ -9,18 +9,25 @@ plot_comparison <- function(x, xlabel, limit=NULL, output=NULL) {
     types <- x$types
     legend <- x$legend
     mode <- x$mode
+    nsim <- x$nsim
     if (is.null(mode)) {
         mode <- rep('serial', length(files))
+    }
+    if (is.null(nsim)) {
+        nsim <- rep(1, length(files))
     }
 
     if (!all.equal(length(files), length(types), length(legend))) {
         stop ("files, types and legend must have the same length")
     }
 
-    data <- parse(files[1], types[1], legend[1], limit, mode[1], FALSE)
+    data <- parse(files[1], types[1], legend[1], limit, mode[1], nsim[1], FALSE)
+    first <- data
+    speed_up <- list()
     for (i in 2:length(files)) {
-        tmp <- parse(files[i], types[i], legend[i], limit, mode[i], FALSE)
+        tmp <- parse(files[i], types[i], legend[i], limit, mode[i], nsim[i], FALSE)
         data <- rbind(data, tmp)
+        speed_up[[legend[i]]] <- summary_speed_up(tmp$time, first$time)
     }
 
     if (!is.null(output)) {
@@ -44,7 +51,7 @@ plot_comparison <- function(x, xlabel, limit=NULL, output=NULL) {
         dev.off()
     }
 
-    return(data)
+    return(list(data=data, speed_up=speed_up))
 }
 
 # plot growth rate
@@ -118,20 +125,29 @@ diff_div <- function(x) {
     return(c(0,x))
 }
 
-parse <- function(file, type, legend, limit=NULL, mode='serial', diff=FALSE) {
+parse <- function(file, type, legend, limit=NULL, mode='serial', nsim=c(1), diff=FALSE) {
     col.names <- c('tree', 'taxa', 'state', 'time', 'nsim', 'mode')
     data <- read.table(file, row.names=NULL, col.names=col.names)
+    # filter by mode (parallel/serial)
     if (!is.null(mode)) {
         data <- data[data$mode==mode,]
     }
+    # filter by number of simulations (useful for simmap)
+    if (!is.null(nsim)) {
+        data <- data[data$nsim==nsim,]
+    }
+    # projection by execution time and the parameter state/taxa/trees/...
     data <- data[,c('time', type)]
+    # add legend
     data$legend <- legend
+    # remove rows, if necessary
     if (!is.null(limit)) {
         data <- head(data, limit)
     }
     if (diff==TRUE) {
         data$time <- c(0,diff(data$time))
     }
+    # give names to resulting data.frame
     colnames(data) <- c('time', 'value', 'legend')
     return(data)
 }

@@ -1,3 +1,13 @@
+summary_speed_up <- function(t1, t2) {
+    ret <- list(
+        'mean' = mean(apply(cbind(t1,t2), 1, function(x) x[1]/x[2]))
+        , 'lastf1' = tail(t1, 1)
+        , 'lastf2' = tail(t2, 1)
+        , 'max' = tail(t1, 1) / tail(t2, 1)
+    )
+    return(ret)
+}
+
 simulation.data <- function(tree) {
     # the order of columns created by the sim.history might be different
     # from what simmap and sfreemap expect.
