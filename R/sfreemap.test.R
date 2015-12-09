@@ -3,9 +3,11 @@ sfreemap.test.perf <- function(tree_seq
                                , q_size_seq
                                , n_sim_seq=c(1)
                                , n_tests=5
-                               , parallel=TRUE, serial=TRUE
+                               , parallel=TRUE
+                               , serial=TRUE
                                , prog="sfreemap"
-                               , message=TRUE, file=NULL) {
+                               , message=TRUE
+                               , file=NULL) {
 
     res_size <- length(tree_seq) *
                 length(species_seq) *
