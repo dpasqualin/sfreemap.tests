@@ -5,8 +5,9 @@ sfreemap.test.perf <- function(tree_seq
                                , n_tests=5
                                , parallel=TRUE
                                , serial=TRUE
-                               , prog="sfreemap"
+                               , prog="sfreemapc"
                                , message=TRUE
+                               , fixed_q=FALSE
                                , file=NULL) {
 
     res_size <- length(tree_seq) *
@@ -25,7 +26,7 @@ sfreemap.test.perf <- function(tree_seq
                 for (n in n_sim_seq) {
 
                     if (isTRUE(serial)) {
-                        elapsed <- calc_time(trees, FALSE, prog, n_tests, n)
+                        elapsed <- calc_time(trees, FALSE, prog, n_tests, n, fixed_q)
                         data <- c(t, s, q, elapsed, n, "serial")
                         result[r_idx,] <- data
                         if (isTRUE(message)) {
@@ -35,7 +36,7 @@ sfreemap.test.perf <- function(tree_seq
                     }
 
                     if (isTRUE(parallel)) {
-                        elapsed <- calc_time(trees, TRUE, prog, n_tests, n)
+                        elapsed <- calc_time(trees, TRUE, prog, n_tests, n, fixed_q)
                         data <- c(t, s, q, elapsed, n, "parallel")
                         result[r_idx,] <- data
                         if (isTRUE(message)) {

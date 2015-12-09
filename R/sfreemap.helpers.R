@@ -220,7 +220,7 @@ remove_outliers <- function(x, na.rm = TRUE, ...) {
   y[!y %in% NA]
 }
 
-calc_time <- function(trees, parallel, prog, n_tests, n_sim, remove_outliers=TRUE) {
+calc_time <- function(trees, parallel, prog, n_tests, n_sim, fixed_q, remove_outliers=TRUE) {
 
     if (inherits(trees, 'phylo')) {
         states <- trees$states
@@ -232,18 +232,34 @@ calc_time <- function(trees, parallel, prog, n_tests, n_sim, remove_outliers=TRU
         t_start <- proc.time()
         expr
         t_end <- proc.time()
-        return ((t_end-t_start)[3])
+        elapsed <- (t_end-t_start)[3]
+        return (elapsed)
+    }
+
+    # Decide whether to estimate or to use Q from the tree
+    if (isTRUE(fixed_q)) {
+        if (inherits(trees, 'phylo')) {
+            Q <- trees$Q
+        } else {
+            Q <- trees[[1]]$Q
+        }
+    } else {
+        if (prog == 'sfreemapc') {
+            Q <- NULL
+        } else {
+            Q <- 'empirical'
+        }
     }
 
     values <- rep(0, n_tests)
 
     for (i in 1:n_tests) {
         if (prog == 'sfreemap') {
-            t <- doit(sfreemap::sfreemap.map(trees, states, Q='empirical', parallel=parallel))
+            t <- doit(sfreemap::sfreemap.map(trees, states, Q=Q, parallel=parallel))
         } else if (prog == 'sfreemapc') {
-            t <- doit(sfreemapc::sfreemap.map(trees, states, method='empirical', type='standard', parallel=parallel))
+            t <- doit(sfreemapc::sfreemap.map(trees, states, Q=Q, method='empirical', type='standard', parallel=parallel))
         } else if (prog == 'simmap') {
-            t <- doit(make.simmap(trees, states, Q='empirical', nsim=n_sim, message=FALSE))
+            t <- doit(make.simmap(trees, states, Q=Q, nsim=n_sim, message=FALSE))
         } else {
             stop('valid for "prog": (simmap|sfreemap|sfreemapc)')
         }
@@ -277,9 +293,16 @@ create_trees <- function(n_trees, n_species, q_size, unique=FALSE) {
         }
     }
 
+    add_qs <- function(tree, Q) {
+        tree[['Q']] <- Q
+        return (tree)
+    }
+
     if (n_trees > 1) {
+        trees <- lapply(trees, add_qs, Q=QS)
         class(trees) <- 'multiPhylo'
     } else {
+        trees[['Q']] <- QS
         class(trees) <- 'phylo'
     }
 
