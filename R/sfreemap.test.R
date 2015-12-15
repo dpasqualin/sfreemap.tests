@@ -8,13 +8,15 @@ sfreemap.test.perf <- function(tree_seq
                                , prog="sfreemapc"
                                , message=TRUE
                                , fixed_q=FALSE
+                               , estimate_q=TRUE
                                , file=NULL) {
 
     res_size <- length(tree_seq) *
                 length(species_seq) *
                 length(q_size_seq) *
                 length(n_sim_seq) *
-                ifelse(isTRUE(parallel) && isTRUE(serial), 2, 1)
+                ifelse(isTRUE(parallel) && isTRUE(serial), 2, 1) *
+                ifelse(isTRUE(fixed_q) && isTRUE(estimate_q), 2, 1)
 
     result <- create_result_matrix(res_size)
 
@@ -25,24 +27,31 @@ sfreemap.test.perf <- function(tree_seq
                 trees <- create_trees(t, s, q)
                 for (n in n_sim_seq) {
 
-                    if (isTRUE(serial)) {
-                        elapsed <- calc_time(trees, FALSE, prog, n_tests, n, fixed_q)
-                        data <- c(t, s, q, elapsed, n, "serial")
-                        result[r_idx,] <- data
+                    run <- function(mode, q_type) {
+                        elapsed <- calc_time(trees, FALSE, prog, n_tests, n, q_type)
+                        data <- c(t, s, q, elapsed, n, mode)
+                        result[r_idx,] <<- data
                         if (isTRUE(message)) {
-                            print_info(prog, r_idx, res_size, elapsed, t, s, q, n, "serial")
+                            print_info(prog, r_idx, res_size, elapsed, t, s, q, n, mode)
                         }
-                        r_idx <- r_idx + 1
+                        r_idx <<- r_idx + 1
+                    }
+
+                    run_in_mode <- function(mode) {
+                        if (isTRUE(fixed_q)) {
+                            run(mode, TRUE)
+                        }
+                        if (isTRUE(estimate_q)) {
+                            run(mode, FALSE)
+                        }
+                    }
+
+                    if (isTRUE(serial)) {
+                        run_in_mode("serial")
                     }
 
                     if (isTRUE(parallel)) {
-                        elapsed <- calc_time(trees, TRUE, prog, n_tests, n, fixed_q)
-                        data <- c(t, s, q, elapsed, n, "parallel")
-                        result[r_idx,] <- data
-                        if (isTRUE(message)) {
-                            print_info(prog, r_idx, res_size, elapsed, t, s, q, n, "parallel")
-                        }
-                        r_idx <- r_idx + 1
+                        run_in_mode("parallel")
                     }
                 }
             }
@@ -66,4 +75,59 @@ print_info <- function(prog, r_idx, res_size, elapsed, t, s, q, n, mode) {
           ,", mode=", mode
           ,"):", sep="")
     cat(" ", elapsed, "s\n", sep="")
+}
+
+calc_time <- function(trees, parallel, prog, n_tests, n_sim, fixed_q, remove_outliers=TRUE) {
+
+    if (inherits(trees, 'phylo')) {
+        states <- trees$states
+    } else {
+        states <- trees[[1]]$states
+    }
+
+    doit <- function(expr) {
+        t_start <- proc.time()
+        expr
+        t_end <- proc.time()
+        elapsed <- (t_end-t_start)[3]
+        return (elapsed)
+    }
+
+    # Decide whether to estimate or to use Q from the tree
+    if (isTRUE(fixed_q)) {
+        if (inherits(trees, 'phylo')) {
+            Q <- trees$Q
+        } else {
+            Q <- trees[[1]]$Q
+        }
+    } else {
+        if (prog == 'sfreemapc') {
+            Q <- NULL
+        } else {
+            Q <- 'empirical'
+        }
+    }
+
+    values <- rep(0, n_tests)
+
+    for (i in 1:n_tests) {
+        if (prog == 'sfreemap') {
+            t <- doit(sfreemap::sfreemap.map(trees, states, Q=Q, parallel=parallel))
+        } else if (prog == 'sfreemapc') {
+            t <- doit(sfreemapc::sfreemap.map(trees, states, Q=Q, method='empirical', type='standard', parallel=parallel))
+        } else if (prog == 'simmap') {
+            t <- doit(make.simmap(trees, states, Q=Q, nsim=n_sim, message=FALSE))
+        } else {
+            stop('valid for "prog": (simmap|sfreemap|sfreemapc)')
+        }
+        values[i] <- t
+    }
+
+    if (isTRUE(remove_outliers)) {
+        values <- remove_outliers(values)
+    }
+
+    t_elapsed <- mean(values)
+
+    return(t_elapsed)
 }
