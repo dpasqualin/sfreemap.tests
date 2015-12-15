@@ -38,9 +38,9 @@ sfreemap.test.boxplot <- function(species=128
         states <- tree[[1]]$states
     }
 
-    sfreemap_result <- sfreemap.map(tree, states, Q=Q_sfreemap)
+    sfreemap_result <- sfreemapc::sfreemap.map(tree, states, method=Q_sfreemap)
 
-    desc <- sfreemap.describe(sfreemap_result)
+    desc <- summary(sfreemap_result)
     sfreemap_mean <- list(lmt=sum(desc$transitions), emr=desc$dwelling_times)
     sfreemap_diff <- sfreemap.diff(hist, sfreemap_mean)
 
@@ -78,7 +78,7 @@ sfreemap.test.boxplot <- function(species=128
     outdir_suffix <- format(Sys.time(), "%Y-%m-%d_%H:%M:%OS")
     outdir_suffix <- paste(outdir_suffix, 'boxplot', sep='_')
 
-    out_dir <- create_out_dir(dest_dir, species, 'mcmc', 'ER', outdir_suffix)
+    out_dir <- create_out_dir(dest_dir, species, Q_simmap, model, outdir_suffix)
     out_file <- create_out_file(out_dir, 'simmap', nsim)
 
     create_info_file(out_dir, species=species, Q=Q_simmap, pi=pi, model=model
@@ -86,19 +86,19 @@ sfreemap.test.boxplot <- function(species=128
         , sample_freq=sample_freq)
 
     plot_boxplot(out_dir, 'boxplot_emr_diff.png', simmap_result, 'diff_emr'
-                 , 'Generations', 'Error', sfreemap_diff$emr)
+                 , 'Gerações', 'Erro', sfreemap_diff$emr)
 
     plot_boxplot(out_dir, 'boxplot_lmt_diff.png', simmap_result, 'diff_lmt'
-                 , 'Generations', 'Error', sfreemap_diff$lmt)
+                 , 'Gerações', 'Erro', sfreemap_diff$lmt)
 
     plot_boxplot(out_dir, 'boxplot_lmt.png', simmap_result, 'transitions'
-                 , 'Generations', 'Transitions', sfreemap_mean$lmt)
+                 , 'Gerações', 'Transições', sfreemap_mean$lmt)
 
     plot_boxplot(out_dir, 'boxplot_emr_a.png', simmap_result, 'time_in_a'
-                 , 'Generations', 'Dwelling time', sfreemap_mean$emr[1])
+                 , 'Gerações', 'Tempo de permanência', sfreemap_mean$emr[1])
 
     plot_boxplot(out_dir, 'boxplot_emr_b.png', simmap_result, 'time_in_b'
-                 , 'Generations', 'Dwelling time', sfreemap_mean$emr[2])
+                 , 'Gerações', 'Tempo de Permanência', sfreemap_mean$emr[2])
 
     write_to_file(out_file, simmap_result, tree, out_dir, hist)
 
