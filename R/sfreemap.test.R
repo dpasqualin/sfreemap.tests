@@ -28,7 +28,7 @@ sfreemap.test.perf <- function(tree_seq
                 for (n in n_sim_seq) {
 
                     run <- function(mode, q_type) {
-                        q_value <- ifelse(isTRUE(q_type), 'fixed', 'esimated')
+                        q_value <- ifelse(isTRUE(q_type), 'fixed', 'estimated')
                         elapsed <- calc_time(trees, FALSE, prog, n_tests, n, q_type)
                         data <- c(t, s, q, elapsed, n, mode, q_value)
                         result[r_idx,] <<- data
