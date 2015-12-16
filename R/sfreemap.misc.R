@@ -203,7 +203,7 @@ write_to_file <- function(out_file, result, tree=NULL, out_dir=NULL
 create_result_matrix <- function(n) {
 
 	# TODO: only works for two states, should work for any number
-	metric_values <- c("n_trees", "n_species", "q_size", "time", "nsim", "mode")
+	metric_values <- c("n_trees", "n_species", "q_size", "time", "nsim", "mode", "q")
 	result <- matrix(0, nrow=n
 			  , ncol=length(metric_values)
 			  , dimnames=list(1:n, metric_values))

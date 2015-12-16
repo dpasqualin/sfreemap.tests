@@ -8,7 +8,7 @@ sfreemap.test.perf <- function(tree_seq
                                , prog="sfreemapc"
                                , message=TRUE
                                , fixed_q=FALSE
-                               , estimate_q=TRUE
+                               , estimated_q=TRUE
                                , file=NULL) {
 
     res_size <- length(tree_seq) *
@@ -16,7 +16,7 @@ sfreemap.test.perf <- function(tree_seq
                 length(q_size_seq) *
                 length(n_sim_seq) *
                 ifelse(isTRUE(parallel) && isTRUE(serial), 2, 1) *
-                ifelse(isTRUE(fixed_q) && isTRUE(estimate_q), 2, 1)
+                ifelse(isTRUE(fixed_q) && isTRUE(estimated_q), 2, 1)
 
     result <- create_result_matrix(res_size)
 
@@ -28,8 +28,9 @@ sfreemap.test.perf <- function(tree_seq
                 for (n in n_sim_seq) {
 
                     run <- function(mode, q_type) {
+                        q_value <- ifelse(isTRUE(q_type), 'fixed', 'esimated')
                         elapsed <- calc_time(trees, FALSE, prog, n_tests, n, q_type)
-                        data <- c(t, s, q, elapsed, n, mode)
+                        data <- c(t, s, q, elapsed, n, mode, q_value)
                         result[r_idx,] <<- data
                         if (isTRUE(message)) {
                             print_info(prog, r_idx, res_size, elapsed, t, s, q, n, mode)
@@ -41,7 +42,7 @@ sfreemap.test.perf <- function(tree_seq
                         if (isTRUE(fixed_q)) {
                             run(mode, TRUE)
                         }
-                        if (isTRUE(estimate_q)) {
+                        if (isTRUE(estimated_q)) {
                             run(mode, FALSE)
                         }
                     }
