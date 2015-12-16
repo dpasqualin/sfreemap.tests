@@ -33,7 +33,7 @@ sfreemap.test.perf <- function(tree_seq
                         data <- c(t, s, q, elapsed, n, mode, q_value)
                         result[r_idx,] <<- data
                         if (isTRUE(message)) {
-                            print_info(prog, r_idx, res_size, elapsed, t, s, q, n, mode)
+                            print_info(prog, r_idx, res_size, elapsed, t, s, q, n, mode, q_value)
                         }
                         r_idx <<- r_idx + 1
                     }
@@ -66,7 +66,7 @@ sfreemap.test.perf <- function(tree_seq
     return(result)
 }
 
-print_info <- function(prog, r_idx, res_size, elapsed, t, s, q, n, mode) {
+print_info <- function(prog, r_idx, res_size, elapsed, t, s, q, n, mode, q_value) {
     cat("test", (r_idx), "of", res_size)
     cat(" (prog=", prog
           ,", n_trees=", t
@@ -74,6 +74,7 @@ print_info <- function(prog, r_idx, res_size, elapsed, t, s, q, n, mode) {
           ,", q_size=", q
           ,", n_sim=", n
           ,", mode=", mode
+          ,", q_type=", q_value
           ,"):", sep="")
     cat(" ", elapsed, "s\n", sep="")
 }
