@@ -1,16 +1,15 @@
-just_do_it <- function() {
 
-    # generate grouwth rate chart
-    #x <- list(
-    #    files=c('sfreemapc.taxa.txt', 'sfreemapc.states.txt',
-    #            'sfreemapc.trees.txt', 'simmap.states.txt'),
-    #    types=c('taxa', 'state', 'tree', 'state'),
-    #    legend=c('Sfreemap-Taxa', 'Sfreemap-Estados',
-    #             'Sfreemap-Árvores', 'Simmap-Estados')
-    #)
+create_plots <- function() {
 
-    # limit=10 because we only have 10 values for states
-    #plot_growth_rate(x, 10, output='/tmp/growth.png')
+    # ----------------------------------------------------------
+    x <- list(
+        files=c('sfreemapc.states.txt', 'sfreemap.states.txt', 'sfreemapc.states.txt', 'sfreemap.states.txt'),
+        types=c('state', 'state', 'state', 'state'),
+        time=c('time_to_map', 'time_to_map', 'time_to_estimate', 'time_to_estimate'),
+        legend=c('SFREEMAP-C-MAP', 'SFREEMAP-R-MAP', 'SFREEMAP-C-ESTIMATE', 'SFREEMAP-R-ESTIMATE')
+    )
+
+    plot_comparison_for_q(x, "Número de estados", output='/tmp/analyse_q_states.png')
 
     # ----------------------------------------------------------
     x <- list(
