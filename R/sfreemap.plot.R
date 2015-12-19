@@ -172,6 +172,16 @@ plot_comparison_for_q <- function(x, xlabel, type='state', output=NULL) {
     legend <- x$legend
     time <- x$time # time_to_map, time_to_estimate or total
 
+    if (is.null(types)) {
+        mode <- rep('state', length(files))
+    }
+    if (is.null(time)) {
+        time <- rep('total', length(files))
+    }
+
+    if (!all.equal(length(files), length(legend))) {
+        stop ("files, types and legend must have the same length")
+    }
 
     col.names <- c('tree', 'taxa', 'state', 'time', 'nsim', 'mode', 'q')
 
@@ -185,6 +195,11 @@ plot_comparison_for_q <- function(x, xlabel, type='state', output=NULL) {
 
         data <- read.table(f, row.names=NULL, col.names=col.names)
 
+        # filter
+        data <- data[data$nsim==1,]
+        data <- data[data$mode=='serial',]
+
+        # compare estimated with fixed q
         fixed <- data[data$q=='fixed',]
         estimated <- data[data$q=='estimated',]
         data <- cbind(fixed[[type]], fixed$time, estimated$time)
