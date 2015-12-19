@@ -29,7 +29,7 @@ sfreemap.test.perf <- function(tree_seq
 
                     run <- function(mode, q_type) {
                         q_value <- ifelse(isTRUE(q_type), 'fixed', 'estimated')
-                        elapsed <- calc_time(trees, FALSE, prog, n_tests, n, q_type)
+                        elapsed <- calc_time(trees, mode, prog, n_tests, n, q_type)
                         data <- c(t, s, q, elapsed, n, mode, q_value)
                         result[r_idx,] <<- data
                         if (isTRUE(message)) {
@@ -48,11 +48,11 @@ sfreemap.test.perf <- function(tree_seq
                     }
 
                     if (isTRUE(serial)) {
-                        run_in_mode("serial")
+                        run_in_mode(FALSE)
                     }
 
                     if (isTRUE(parallel)) {
-                        run_in_mode("parallel")
+                        run_in_mode(TRUE)
                     }
                 }
             }

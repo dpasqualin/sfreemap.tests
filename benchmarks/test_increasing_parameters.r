@@ -21,6 +21,7 @@ run <- function(trees, taxa, q, criteria, nsim=c(1)
                             , nsim
                             , prog=p
                             , parallel=parallel
+                            , fixed_q=TRUE
                             , n_tests=n_tests
                             , file=output)
     }
@@ -29,14 +30,14 @@ run <- function(trees, taxa, q, criteria, nsim=c(1)
 #
 # increasing states
 #
-q <- seq(2,20,2)
-run(1, 128, q, 'states', parallel=FALSE, nsim=nsim)
+#q <- seq(2,20,2)
+#run(1, 256, q, 'states', parallel=FALSE, nsim=nsim)
 
 #
 # increasing trees
 #
 trees <- c(1,seq(2,128,2))
-run(trees, 128, 4, 'trees', nsim=nsim)
+run(trees, 256, 4, 'trees', nsim=nsim)
 
 #
 # increasing taxa
