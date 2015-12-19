@@ -1,6 +1,15 @@
 
 create_plots <- function() {
 
+    x <- list(
+        files=c('sfreemapc.states.txt', 'sfreemap.states.txt', 'simmap.states.txt'),
+        types=c('state', 'state', 'state'),
+        time=c('time_to_estimate', 'time_to_estimate', 'time_to_estimate'),
+        legend=c('SFREEMAP-C', 'SFREEMAP-R', 'SIMMAP')
+    )
+
+    plot_comparison_for_q(x, "Número de estados", output='/tmp/estimate_q_states.png')
+
     # ----------------------------------------------------------
     x <- list(
         files=c('sfreemapc.states.txt', 'sfreemap.states.txt', 'sfreemapc.states.txt', 'sfreemap.states.txt'),
