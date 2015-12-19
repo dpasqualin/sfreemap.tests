@@ -165,7 +165,7 @@ parse <- function(file, type, legend, limit=NULL, mode='serial', nsim=1, q='esti
 }
 
 
-plot_comparison_for_q <- function(x, xlabel, type='state', output=NULL) {
+plot_comparison_for_q <- function(x, xlabel, output=NULL) {
 
     files <- x$files
     types <- x$types
@@ -224,6 +224,10 @@ plot_comparison_for_q <- function(x, xlabel, type='state', output=NULL) {
     final_data <- data.frame(final_data, stringsAsFactors=FALSE)
     final_plot <- data.frame(final_plot, stringsAsFactors=FALSE)
 
+    if (!is.null(output)) {
+        png(output, width=1024, height=768)
+    }
+
     p <- ggplot(final_plot, aes(x=value, y=time, group=legend, colour=factor(legend))) +
             stat_smooth(method='loess', fullrange=TRUE, se=FALSE) +
             geom_point() +
@@ -234,6 +238,10 @@ plot_comparison_for_q <- function(x, xlabel, type='state', output=NULL) {
             xlab(xlabel) +
             ylab("Tempo decorrido (segundos)")
     print(p)
+
+    if (!is.null(output)) {
+        dev.off()
+    }
 
     return(final_data)
 }
