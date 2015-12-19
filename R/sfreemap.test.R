@@ -67,6 +67,8 @@ sfreemap.test.perf <- function(tree_seq
 }
 
 print_info <- function(prog, r_idx, res_size, elapsed, t, s, q, n, mode, q_value) {
+    mode <- ifelse(isTRUE(mode), 'parallel', 'serial')
+
     cat("test", (r_idx), "of", res_size)
     cat(" (prog=", prog
           ,", n_trees=", t
