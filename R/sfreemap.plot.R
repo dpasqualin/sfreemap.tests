@@ -29,6 +29,7 @@ plot_comparison <- function(x, xlabel, limit=NULL, output=NULL) {
         stop ("files, types and legend must have the same length")
     }
 
+    # FIXME: this is ugly... there is no need to do the first step outside the main loop
     data <- parse(files[1], types[1], legend[1], limit, mode[1], nsim[1], q[1], FALSE)
     first <- data
     speed_up <- list()
