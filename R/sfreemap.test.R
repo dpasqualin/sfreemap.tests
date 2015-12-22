@@ -30,9 +30,12 @@ sfreemap.test.perf <- function(tree_seq
                 for (o in omp) {
                     for (n in n_sim_seq) {
 
-                        if (any(prog != 'sfreemapc' && o > 0,
+                        if (any(prog != 'sfreemapc' && o > 1,
                                 prog == 'simmap' && isTRUE(parallel))) {
                             result[r_idx,] <- rep(0, ncol(result))
+                            if (isTRUE(message)) {
+                                cat ('ignoring run where prog=', prog, ' o=',o,' parallel=', parallel, '\n', sep='')
+                            }
                             r_idx <- r_idx + 1
                             next
                         }
