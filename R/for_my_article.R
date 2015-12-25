@@ -9,6 +9,16 @@ create_plots <- function() {
     )
 
     plot_comparison_for_q(x, "Número de estados", output='/tmp/estimate_q_states.png')
+    # ----------------------------------------------------------
+
+    x <- list(
+        files=c('sfreemapc.taxa.txt', 'sfreemap.taxa.txt', 'simmap.taxa.txt'),
+        types=c('taxa', 'taxa', 'taxa'),
+        time=c('time_to_estimate', 'time_to_estimate', 'time_to_estimate'),
+        legend=c('SFREEMAP-C', 'SFREEMAP-R', 'SIMMAP')
+    )
+
+    plot_comparison_for_q(x, "Número de taxa", output='/tmp/estimate_q_taxa.png')
 
     # ----------------------------------------------------------
     x <- list(
@@ -88,6 +98,25 @@ create_plots <- function() {
 
     plot_comparison(x, "Número de árvores", output='/tmp/trees_simmap.png')
     # ----------------------------------------------------------
+
+    x <- list(
+        files=c('sfreemapc.states.omp.txt', 'sfreemapc.states.omp.txt'),
+        types=c('omp', 'omp'),
+        q=c('fixed', 'estimated'),
+        legend=c('MAPEAMENTO', 'MAPEAMENTO + MATRIZ Q')
+    )
+
+    plot_comparison(x, "Número de núcleos de processamento", output='/tmp/states_omp.png')
+    # ----------------------------------------------------------
+
+    x <- list(
+        files=c('sfreemapc.states.omp.txt', 'sfreemapc.states.omp.txt'),
+        types=c('omp', 'omp'),
+        q=c('fixed', 'estimated'),
+        legend=c('MAPEAMENTO', 'TOTAL')
+    )
+
+    plot_speed_up(x, output='/tmp/states_speedup_omp.png')
 
     return(NULL)
 }
