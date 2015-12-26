@@ -6,7 +6,7 @@ sfreemap.test.perf <- function(tree_seq
                                , omp=c(1)
                                , parallel=TRUE
                                , serial=TRUE
-                               , prog="sfreemapc"
+                               , prog="sfreemap"
                                , message=TRUE
                                , fixed_q=FALSE
                                , estimated_q=TRUE
@@ -30,7 +30,7 @@ sfreemap.test.perf <- function(tree_seq
                 for (o in omp) {
                     for (n in n_sim_seq) {
 
-                        if (any(prog != 'sfreemapc' && o > 1,
+                        if (any(prog != 'sfreemap' && o > 1,
                                 prog == 'simmap' && isTRUE(parallel))) {
                             result[r_idx,] <- rep(0, ncol(result))
                             if (isTRUE(message)) {
@@ -121,7 +121,7 @@ calc_time <- function(trees, parallel, prog, n_tests, n_sim, fixed_q, omp, remov
             Q <- trees[[1]]$Q
         }
     } else {
-        if (prog == 'sfreemapc') {
+        if (prog == 'sfreemap') {
             Q <- NULL
         } else {
             Q <- 'empirical'
@@ -131,14 +131,14 @@ calc_time <- function(trees, parallel, prog, n_tests, n_sim, fixed_q, omp, remov
     values <- rep(0, n_tests)
 
     for (i in 1:n_tests) {
-        if (prog == 'sfreemap') {
-            t <- doit(sfreemap::sfreemap.map(trees, states, Q=Q, parallel=parallel))
-        } else if (prog == 'sfreemapc') {
-            t <- doit(sfreemapc::sfreemap.map(trees, states, Q=Q, method='empirical', type='standard', parallel=parallel, omp=omp))
+        if (prog == 'sfreemapr') {
+            t <- doit(sfreemapr.map(trees, states, Q=Q, parallel=parallel))
+        } else if (prog == 'sfreemap') {
+            t <- doit(sfreemap.map(trees, states, Q=Q, method='empirical', type='standard', parallel=parallel, omp=omp))
         } else if (prog == 'simmap') {
             t <- doit(make.simmap(trees, states, Q=Q, nsim=n_sim, message=FALSE))
         } else {
-            stop('valid for "prog": (simmap|sfreemap|sfreemapc)')
+            stop('valid for "prog": (simmap|sfreemap|sfreemapr)')
         }
         values[i] <- t
     }

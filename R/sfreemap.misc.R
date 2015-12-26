@@ -73,23 +73,6 @@ simmap.calc_simulations_evolution <- function(trees, plot=FALSE) {
     return(data)
 }
 
-# return t1 only with tips that are in t2 too
-# optionally reroot at node 'reroot'
-# TODO: this is useful for everyone, should be moved to package sfreemap
-sfreemap.pruning <- function(t1, t2, reroot=NULL) {
-    tips_to_remove <- t1$tip.label[!t1$tip.label %in% t2$tip.label]
-    t <- drop.tip(t1, tips_to_remove)
-    if (!is.null(reroot)) {
-        if (reroot %in% t$tip.label) {
-            t <- root(t, reroot)
-        } else {
-            msg <- paste('trying to root tree but tip', reroot, 'doesn\'t exist')
-            stop(msg)
-        }
-    }
-    return(t)
-}
-
 # This function calculates the "mean tree", in other words, the mean value
 # for dwelling times on states of a multiPhylo object.
 sfreemap.reduce <- function(trees, type='mean') {

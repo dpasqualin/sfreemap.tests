@@ -2,7 +2,7 @@
 
 require(sfreemap.tests)
 require(sfreemap)
-require(sfreemapc)
+require(sfreemapr)
 
 # constants
 n_tests <- 5
@@ -10,7 +10,7 @@ nsim <- c(1,10,100)
 
 run <- function(trees, taxa, q, criteria, nsim=c(1)
                      , parallel = TRUE
-                     , progs = c('sfreemap', 'sfreemapc', 'simmap')) {
+                     , progs = c('sfreemapr', 'sfreemap', 'simmap')) {
     for (p in progs) {
         parallel <- ifelse(p == 'simmap', FALSE, parallel)
         nsim <- ifelse(p == 'simmap', nsim, c(1))
