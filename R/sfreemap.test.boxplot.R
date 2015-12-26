@@ -48,11 +48,19 @@ sfreemap.test.boxplot <- function(species=128
             , ncol=length(metric_values)
             , dimnames=list(1:(n_tests*nsim), metric_values))
 
-    for (sim_num in 1:n_tests) {
+    run_parallel <- function(n) {
         mtrees <- make.simmap(tree, states, Q=Q_simmap, pi=pi
                                   , model=model, nsim=nsim
                                   , samplefreq=sample_freq
                                   , message=FALSE)
+
+        return(mtrees)
+    }
+
+    all_mtrees <- mclapply(1:n_tests, run_parallel, mc.cores=detectCores())
+
+    for (sim_num in 1:n_tests) {
+        mtrees <- all_mtrees[[sim_num]]
 
         for (i in 1:(length(mtrees)/n_trees)) {
             if ('phylo' %in% class(tree)) {

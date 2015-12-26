@@ -8,7 +8,7 @@ importFrom(sfreemapr, sfreemapr.map)
 importFrom(ape, ace, plot.phylo, all.equal.phylo)
 importFrom(ape, read.tree, reorder.phylo, write.tree)
 importFrom(phytools, countSimmap, pbtree, make.simmap, sim.history)
-importFrom(parallel, detectCores)
+importFrom(parallel, mclapply, detectCores)
 importFrom(graphics, pairs)
 
 importFrom(ggplot2, ggplot, scale_alpha_discrete, scale_fill_discrete, aes
