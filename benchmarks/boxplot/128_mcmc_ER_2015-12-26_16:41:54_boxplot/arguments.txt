@@ -1,0 +1,9 @@
+species = 128
+Q = mcmc
+pi = equal
+model = ER
+trees = 
+n_trees = 1
+nsim = 25
+n_tests = 25
+sample_freq = 2000
