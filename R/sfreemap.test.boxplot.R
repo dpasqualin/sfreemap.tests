@@ -41,7 +41,7 @@ sfreemap.test.boxplot <- function(species=128
     sfreemap_result <- sfreemap.map(tree, states, method=Q_sfreemap)
 
     desc <- summary(sfreemap_result)
-    sfreemap_mean <- list(lmt=sum(desc$transitions), emr=desc$dwelling_times)
+    sfreemap_mean <- list(lmt=sum(desc$transitions), emr=desc$dwelling_times[1,unique(states)])
     sfreemap_diff <- sfreemap.diff(hist, sfreemap_mean)
 
     simmap_result <- matrix(0, nrow=n_tests*nsim
