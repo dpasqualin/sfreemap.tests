@@ -134,7 +134,7 @@ calc_time <- function(trees, parallel, prog, n_tests, n_sim, fixed_q, omp, remov
         if (prog == 'sfreemapr') {
             t <- doit(sfreemapr.map(trees, states, Q=Q, parallel=parallel))
         } else if (prog == 'sfreemap') {
-            t <- doit(sfreemap.map(trees, states, Q=Q, method='empirical', type='standard', parallel=parallel, omp=omp))
+            t <- doit(sfreemap(trees, states, Q=Q, method='empirical', type='standard', parallel=parallel, omp=omp))
         } else if (prog == 'simmap') {
             t <- doit(make.simmap(trees, states, Q=Q, nsim=n_sim, message=FALSE))
         } else {
