@@ -77,7 +77,9 @@ plot_comparison <- function(x, xlabel, limit=NULL, output=NULL, no.plot=FALSE) {
 #    legend: the value to be added as a legend
 plot_speed_up <- function(x, limit=NULL, output=NULL, print.ideal=TRUE) {
 
-    xlabel <- 'Speed up'
+    xlabel <- 'Número de núcleos de processamento'
+    ylabel <- 'Speed up'
+
     data <- plot_comparison(x, NULL, limit, output, no.plot=TRUE)
     data <- data$data
 
@@ -91,7 +93,7 @@ plot_speed_up <- function(x, limit=NULL, output=NULL, print.ideal=TRUE) {
     if (isTRUE(print.ideal)) {
         nrows <- nrow(data)/length(legend)
         fill <- rep(0, nrows)
-        ideal_leg <- rep('SPEED UP IDEAL', nrows)
+        ideal_leg <- rep('Speed up ideal', nrows)
         value <- unique(data$value)
         ideal <- data.frame(time=fill, value=value, legend=ideal_leg, speedup=value)
         colnames(ideal) <- colnames(data)
@@ -110,7 +112,7 @@ plot_speed_up <- function(x, limit=NULL, output=NULL, print.ideal=TRUE) {
             scale_colour_brewer(palette="Set1", name = "") +
             theme(legend.position="top", axis.text.y=element_text(hjust=1.3)) +
             xlab(xlabel) +
-            ylab("Tempo decorrido (segundos)")
+            ylab(ylabel)
 
     print(p)
 

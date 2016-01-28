@@ -103,7 +103,7 @@ create_plots <- function() {
         files=c('sfreemapc.states.omp.txt', 'sfreemapc.states.omp.txt'),
         types=c('omp', 'omp'),
         q=c('fixed', 'estimated'),
-        legend=c('MAPEAMENTO', 'MAPEAMENTO + MATRIZ Q')
+        legend=c('Mapeamento', 'Mapeamento mais matriz Q')
     )
 
     plot_comparison(x, "Número de núcleos de processamento", output='/tmp/states_omp.png')
@@ -113,7 +113,7 @@ create_plots <- function() {
         files=c('sfreemapc.states.omp.txt', 'sfreemapc.states.omp.txt'),
         types=c('omp', 'omp'),
         q=c('fixed', 'estimated'),
-        legend=c('MAPEAMENTO', 'TOTAL')
+        legend=c('Mapeamento', 'Mapeamento mais matriz Q')
     )
 
     plot_speed_up(x, output='/tmp/states_speedup_omp.png')
