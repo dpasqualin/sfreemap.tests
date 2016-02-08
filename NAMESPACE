@@ -3,7 +3,7 @@ export(simmap.mean, simulation.data, sfreemap.diff
         , create_trees, sfreemap.reduce
         , simmap.calc_simulations_evolution)
 
-importFrom(sfreemap, sfreemap, sfreemap.pruning)
+importFrom(sfreemap, sfreemap, pruning)
 importFrom(sfreemapr, sfreemapr.map)
 importFrom(ape, ace, plot.phylo, all.equal.phylo)
 importFrom(ape, read.tree, reorder.phylo, write.tree)
