@@ -15,6 +15,7 @@ plot_comparison <- function(x, xlabel, limit=NULL, output=NULL, no.plot=FALSE) {
     nsim <- x$nsim
     q <- x$q
     omp <- x$omp
+    cores <- x$cores
 
     if (is.null(mode)) {
         mode <- rep('serial', length(files))
@@ -25,9 +26,11 @@ plot_comparison <- function(x, xlabel, limit=NULL, output=NULL, no.plot=FALSE) {
     if (is.null(q)) {
         q <- rep('estimated', length(files))
     }
-
     if (is.null(omp)) {
         omp <- rep(1, length(files))
+    }
+    if (is.null(cores)) {
+        cores <- rep(1, length(files))
     }
 
     if (!all.equal(length(files), length(types), length(legend))) {
@@ -35,13 +38,16 @@ plot_comparison <- function(x, xlabel, limit=NULL, output=NULL, no.plot=FALSE) {
     }
 
     # FIXME: this is ugly... there is no need to do the first step outside the main loop
-    data <- parse(files[1], types[1], legend[1], limit, mode[1], nsim[1], q[1], omp[1])
+    data <- parse(files[1], types[1], legend[1], limit, mode[1], nsim[1], q[1], omp[1], cores[1])
+    print(data)
     first <- data
     speed_up <- list()
-    for (i in 2:length(files)) {
-        tmp <- parse(files[i], types[i], legend[i], limit, mode[i], nsim[i], q[i], omp[i])
-        data <- rbind(data, tmp)
-        speed_up[[legend[i]]] <- summary_speed_up(tmp$time, first$time)
+    if (length(files) > 1) {
+        for (i in 2:length(files)) {
+            tmp <- parse(files[i], types[i], legend[i], limit, mode[i], nsim[i], q[i], omp[i], cores[i])
+            data <- rbind(data, tmp)
+            speed_up[[legend[i]]] <- summary_speed_up(tmp$time, first$time)
+        }
     }
 
     if (isTRUE(no.plot)) {
@@ -80,7 +86,7 @@ plot_speed_up <- function(x, limit=NULL, output=NULL, print.ideal=TRUE) {
     xlabel <- 'Número de núcleos de processamento'
     ylabel <- 'Speed up'
 
-    data <- plot_comparison(x, NULL, limit, output, no.plot=TRUE)
+    data <- plot_comparison(x, NULL, limit, no.plot=TRUE)
     data <- data$data
 
     legend <- unique(x$legend)
@@ -145,8 +151,8 @@ plot_boxplot <- function(out_dir, out_file, data, y, xlabel, ylabel, line_data) 
 
 }
 
-parse <- function(file, type, legend, limit=NULL, mode=NULL, nsim=NULL, q=NULL, omp=NULL) {
-    col.names <- c('tree', 'taxa', 'state', 'time', 'nsim', 'mode', 'q', 'omp')
+parse <- function(file, type, legend, limit=NULL, mode=NULL, nsim=NULL, q=NULL, omp=NULL, cores=NULL) {
+    col.names <- c('tree', 'taxa', 'state', 'time', 'nsim', 'mode', 'q', 'omp', 'cores')
     data <- read.table(file, row.names=NULL, col.names=col.names)
     # filter by mode (parallel/serial)
     if (!is.null(mode)) {
@@ -161,6 +167,9 @@ parse <- function(file, type, legend, limit=NULL, mode=NULL, nsim=NULL, q=NULL, 
     }
     if (!is.null(omp) && type!='omp') {
         data <- data[data$omp==omp,]
+    }
+    if (!is.null(cores) && type!='cores') {
+        data <- data[data$cores==cores,]
     }
 
     # projection by execution time and the parameter state/taxa/trees/...

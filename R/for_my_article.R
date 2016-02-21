@@ -118,5 +118,17 @@ create_plots <- function() {
 
     plot_speed_up(x, output='/tmp/states_speedup_omp.png')
 
+    # ----------------------------------------------------------
+
+    x <- list(
+        files=c('sfreemapc.trees.mccores.txt'),
+        types=c('cores'),
+        mode=c('parallel'),
+        q=c('estimated'),
+        legend=c('Sfreemap Paralelo')
+    )
+
+    plot_speed_up(x, limit=17, output='/tmp/trees_speedup_cores.png')
+
     return(NULL)
 }
