@@ -1,0 +1,18 @@
+# n_trees,n_species,q_size,time,nsim,mode,q,omp,cores
+512 256 4 896.445666666667 1 parallel estimated 1 1
+512 256 4 451.771333333334 1 parallel estimated 1 2
+512 256 4 228.869666666666 1 parallel estimated 1 4
+512 256 4 153.532333333334 1 parallel estimated 1 6
+512 256 4 114.676333333333 1 parallel estimated 1 8
+512 256 4 94.3643333333336 1 parallel estimated 1 10
+512 256 4 78.8786666666662 1 parallel estimated 1 12
+512 256 4 68.1273333333338 1 parallel estimated 1 14
+512 256 4 59.7093333333323 1 parallel estimated 1 16
+512 256 4 55.0769999999999 1 parallel estimated 1 18
+512 256 4 49.2686666666668 1 parallel estimated 1 20
+512 256 4 46.1246666666666 1 parallel estimated 1 22
+512 256 4 42.3456666666668 1 parallel estimated 1 24
+512 256 4 39.1643333333341 1 parallel estimated 1 26
+512 256 4 37.7169999999993 1 parallel estimated 1 28
+512 256 4 35.3926666666666 1 parallel estimated 1 30
+512 256 4 32.6066666666666 1 parallel estimated 1 32
