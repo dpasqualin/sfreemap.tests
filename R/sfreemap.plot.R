@@ -30,7 +30,7 @@ plot_comparison <- function(x, xlabel, limit=NULL, output=NULL, no.plot=FALSE) {
         omp <- rep(1, length(files))
     }
     if (is.null(cores)) {
-        cores <- rep(1, length(files))
+        cores <- rep(NULL, length(files))
     }
 
     if (!all.equal(length(files), length(types), length(legend))) {
@@ -39,7 +39,6 @@ plot_comparison <- function(x, xlabel, limit=NULL, output=NULL, no.plot=FALSE) {
 
     # FIXME: this is ugly... there is no need to do the first step outside the main loop
     data <- parse(files[1], types[1], legend[1], limit, mode[1], nsim[1], q[1], omp[1], cores[1])
-    print(data)
     first <- data
     speed_up <- list()
     if (length(files) > 1) {

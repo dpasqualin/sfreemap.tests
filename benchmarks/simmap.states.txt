@@ -1,41 +1,41 @@
-# n_trees,n_species,q_size,time,nsim,mode,q,omp
-1 256 2 0.588749999998981 1 serial fixed 1
-1 256 2 1.12679999999818 1 serial estimated 1
-1 256 4 0.694400000001769 1 serial fixed 1
-1 256 4 7.29550000000017 1 serial estimated 1
-1 256 6 0.817999999999302 1 serial fixed 1
-1 256 6 28.9070000000007 1 serial estimated 1
-1 256 8 1.05749999999898 1 serial fixed 1
-1 256 8 139.86275 1 serial estimated 1
-1 256 10 1.15299999999988 1 serial fixed 1
-1 256 10 284.166199999998 1 serial estimated 1
-1 256 12 1.61275000000023 1 serial fixed 1
-1 256 12 372.592499999999 1 serial estimated 1
-1 256 14 1.78725000000122 1 serial fixed 1
-1 256 14 1518.17175 1 serial estimated 1
-1 256 16 2.04040000000095 1 serial fixed 1
-1 256 16 2237.676 1 serial estimated 1
-1 256 18 2.62800000000061 1 serial fixed 1
-1 256 18 6263.253 1 serial estimated 1
-1 256 20 3.06900000000799 1 serial fixed 1
-1 256 20 9361.45 1 serial estimated 1
-1 256 2 6.16300000000001 10 serial estimated 1
-1 256 2 11.205 20 serial estimated 1
-1 256 4 15.5155 10 serial estimated 1
-1 256 4 22.574 20 serial estimated 1
-1 256 6 30.608 10 serial estimated 1
-1 256 6 38.0525 20 serial estimated 1
-1 256 8 158.8245 10 serial estimated 1
-1 256 8 165.218 20 serial estimated 1
-1 256 12 673.9355 10 serial estimated 1
-1 256 12 688.6125 20 serial estimated 1
-1 256 10 761.153 10 serial estimated 1
-1 256 10 767.17 20 serial estimated 1
-1 256 14 1197.0065 10 serial estimated 1
-1 256 14 1219.014 20 serial estimated 1
-1 256 16 3541.4905 10 serial estimated 1
-1 256 16 3580.2325 20 serial estimated 1
-1 256 18 4580.222 10 serial estimated 1
-1 256 18 4599.311 20 serial estimated 1
-1 256 20 9081.999 10 serial estimated 1
-1 256 20 9562.9465 20 serial estimated 1
+# n_trees,n_species,q_size,time,nsim,mode,q,omp,cores
+1 256 2 0.588749999998981 1 serial fixed 1 0
+1 256 2 1.12679999999818 1 serial estimated 1 0
+1 256 4 0.694400000001769 1 serial fixed 1 0
+1 256 4 7.29550000000017 1 serial estimated 1 0
+1 256 6 0.817999999999302 1 serial fixed 1 0
+1 256 6 28.9070000000007 1 serial estimated 1 0
+1 256 8 1.05749999999898 1 serial fixed 1 0
+1 256 8 139.86275 1 serial estimated 1 0
+1 256 10 1.15299999999988 1 serial fixed 1 0
+1 256 10 284.166199999998 1 serial estimated 1 0
+1 256 12 1.61275000000023 1 serial fixed 1 0
+1 256 12 372.592499999999 1 serial estimated 1 0
+1 256 14 1.78725000000122 1 serial fixed 1 0
+1 256 14 1518.17175 1 serial estimated 1 0
+1 256 16 2.04040000000095 1 serial fixed 1 0
+1 256 16 2237.676 1 serial estimated 1 0
+1 256 18 2.62800000000061 1 serial fixed 1 0
+1 256 18 6263.253 1 serial estimated 1 0
+1 256 20 3.06900000000799 1 serial fixed 1 0
+1 256 20 9361.45 1 serial estimated 1 0
+1 256 2 6.16300000000001 10 serial estimated 1 0
+1 256 2 11.205 20 serial estimated 1 0
+1 256 4 15.5155 10 serial estimated 1 0
+1 256 4 22.574 20 serial estimated 1 0
+1 256 6 30.608 10 serial estimated 1 0
+1 256 6 38.0525 20 serial estimated 1 0
+1 256 8 158.8245 10 serial estimated 1 0
+1 256 8 165.218 20 serial estimated 1 0
+1 256 12 673.9355 10 serial estimated 1 0
+1 256 12 688.6125 20 serial estimated 1 0
+1 256 10 761.153 10 serial estimated 1 0
+1 256 10 767.17 20 serial estimated 1 0
+1 256 14 1197.0065 10 serial estimated 1 0
+1 256 14 1219.014 20 serial estimated 1 0
+1 256 16 3541.4905 10 serial estimated 1 0
+1 256 16 3580.2325 20 serial estimated 1 0
+1 256 18 4580.222 10 serial estimated 1 0
+1 256 18 4599.311 20 serial estimated 1 0
+1 256 20 9081.999 10 serial estimated 1 0
+1 256 20 9562.9465 20 serial estimated 1 0
