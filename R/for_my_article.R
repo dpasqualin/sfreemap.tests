@@ -8,7 +8,7 @@ create_plots <- function() {
         legend=c('SFREEMAP-C', 'SFREEMAP-R', 'SIMMAP')
     )
 
-    plot_comparison_for_q(x, "Número de estados", output='/tmp/estimate_q_states.png')
+    plot_comparison_for_q(x, "Number of states", output='/tmp/estimate_q_states.png')
     # ----------------------------------------------------------
 
     x <- list(
@@ -18,7 +18,7 @@ create_plots <- function() {
         legend=c('SFREEMAP-C', 'SFREEMAP-R', 'SIMMAP')
     )
 
-    plot_comparison_for_q(x, "Número de taxa", output='/tmp/estimate_q_taxa.png')
+    plot_comparison_for_q(x, "Number of taxa", output='/tmp/estimate_q_taxa.png')
 
     # ----------------------------------------------------------
     x <- list(
@@ -28,7 +28,7 @@ create_plots <- function() {
         legend=c('SFREEMAP-C-MAP', 'SFREEMAP-R-MAP', 'SFREEMAP-C-ESTIMATE', 'SFREEMAP-R-ESTIMATE')
     )
 
-    plot_comparison_for_q(x, "Número de estados", output='/tmp/analyse_q_states.png')
+    plot_comparison_for_q(x, "Number of states", output='/tmp/analyse_q_states.png')
 
     # ----------------------------------------------------------
     x <- list(
@@ -37,7 +37,7 @@ create_plots <- function() {
         legend=c('SFREEMAP-C', 'SFREEMAP-R')
     )
 
-    plot_comparison(x, "Número de árvores", output='/tmp/trees_serial.png')
+    plot_comparison(x, "Number of trees", output='/tmp/trees_serial.png')
 
     # ----------------------------------------------------------
 
@@ -48,7 +48,7 @@ create_plots <- function() {
         legend=c('Serial', 'Paralelo')
     )
 
-    plot_comparison(x, "Número de árvores", output='/tmp/trees_parallel.png')
+    plot_comparison(x, "Number of trees", output='/tmp/trees_parallel.png')
 
     # ----------------------------------------------------------
     x <- list(
@@ -57,7 +57,7 @@ create_plots <- function() {
         legend=c('SFREEMAP-C', 'SFREEMAP-R')
     )
 
-    plot_comparison(x, "Número de taxa", output='/tmp/taxa_serial.png')
+    plot_comparison(x, "Number of taxa", output='/tmp/taxa_serial.png')
 
     # ----------------------------------------------------------
     x <- list(
@@ -66,7 +66,7 @@ create_plots <- function() {
         legend=c('SFREEMAP-C', 'SFREEMAP-R')
     )
 
-    plot_comparison(x, "Número de estados do caráter", output='/tmp/states_serial.png')
+    plot_comparison(x, "Number of states", output='/tmp/states_serial.png')
     # ----------------------------------------------------------
 
     x <- list(
@@ -76,7 +76,7 @@ create_plots <- function() {
         legend=c('SFREEMAP', 'SIMMAP-1', 'SIMMAP-10', 'SIMMAP-20')
     )
 
-    plot_comparison(x, "Número de estados do caráter", output='/tmp/states_simmap.png')
+    plot_comparison(x, "Number of states", output='/tmp/states_simmap.png')
     # ----------------------------------------------------------
 
     x <- list(
@@ -86,7 +86,7 @@ create_plots <- function() {
         legend=c('SFREEMAP', 'SIMMAP-1', 'SIMMAP-10', 'SIMMAP-20')
     )
 
-    plot_comparison(x, "Número de taxa", output='/tmp/taxa_simmap.png')
+    plot_comparison(x, "Number of taxa", output='/tmp/taxa_simmap.png')
     # ----------------------------------------------------------
 
     x <- list(
@@ -96,7 +96,7 @@ create_plots <- function() {
         legend=c('SFREEMAP', 'SIMMAP-1', 'SIMMAP-10', 'SIMMAP-20')
     )
 
-    plot_comparison(x, "Número de árvores", output='/tmp/trees_simmap.png')
+    plot_comparison(x, "Number of trees", output='/tmp/trees_simmap.png')
     # ----------------------------------------------------------
 
     x <- list(

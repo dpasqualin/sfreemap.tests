@@ -65,7 +65,7 @@ plot_comparison <- function(x, xlabel, limit=NULL, output=NULL, no.plot=FALSE) {
             scale_colour_brewer(palette="Set1", name = "") +
             theme(legend.position="top", axis.text.y=element_text(hjust=1.3)) +
             xlab(xlabel) +
-            ylab("Tempo decorrido (segundos)")
+            ylab("Elapsed time (seconds)")
     print(p)
 
     if (!is.null(output)) {
@@ -130,13 +130,15 @@ plot_speed_up <- function(x, limit=NULL, output=NULL, print.ideal=TRUE) {
 
 # plot a boxplot
 # this function is used by sfreemap.test.boxplot
-plot_boxplot <- function(out_dir, out_file, data, y, xlabel, ylabel, line_data) {
+plot_boxplot <- function(out_dir, out_file, data, y, xlabel, ylabel, sfreemap_mean) {
 
     data <- data.frame(data)
 
-	output <- paste(out_dir, out_file, sep='/')
+    simmap_mean <- mean(data[[y]])
 
-	png(output, width=1024, height=768)
+    output <- paste(out_dir, out_file, sep='/')
+
+    png(output, width=1024, height=768)
     p <- ggplot(data, aes_string(x='factor(generation)', y=y)) +
             theme_bw(base_size=26) +
             geom_boxplot() +
@@ -144,9 +146,10 @@ plot_boxplot <- function(out_dir, out_file, data, y, xlabel, ylabel, line_data) 
             ylab(ylabel) +
             theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
             theme(axis.title.y = element_text(vjust=1.8)) +
-            geom_hline(yintercept=line_data, color='red')
+            geom_hline(yintercept=sfreemap_mean, color='green', show.legend=TRUE) + 
+            geom_hline(yintercept=simmap_mean, color='blue', show.legend=TRUE)
     print(p)
-	dev.off()
+    dev.off()
 
 }
 

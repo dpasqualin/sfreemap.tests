@@ -94,19 +94,19 @@ sfreemap.test.boxplot <- function(species=128
         , sample_freq=sample_freq)
 
     plot_boxplot(out_dir, 'boxplot_emr_diff.png', simmap_result, 'diff_emr'
-                 , 'Gerações', 'Erro', sfreemap_diff$emr)
+                 , 'Generations', 'Error', sfreemap_diff$emr)
 
     plot_boxplot(out_dir, 'boxplot_lmt_diff.png', simmap_result, 'diff_lmt'
-                 , 'Gerações', 'Erro', sfreemap_diff$lmt)
+                 , 'Generations', 'Error', sfreemap_diff$lmt)
 
     plot_boxplot(out_dir, 'boxplot_lmt.png', simmap_result, 'transitions'
-                 , 'Gerações', 'Transições', sfreemap_mean$lmt)
+                 , 'Generations', 'Transitions', sfreemap_mean$lmt)
 
     plot_boxplot(out_dir, 'boxplot_emr_a.png', simmap_result, 'time_in_a'
-                 , 'Gerações', 'Tempo de permanência', sfreemap_mean$emr[1])
+                 , 'Generations', 'Dwelling time', sfreemap_mean$emr[1])
 
     plot_boxplot(out_dir, 'boxplot_emr_b.png', simmap_result, 'time_in_b'
-                 , 'Gerações', 'Tempo de Permanência', sfreemap_mean$emr[2])
+                 , 'Generations', 'Dwelling time', sfreemap_mean$emr[2])
 
     write_to_file(out_file, simmap_result, tree, out_dir, hist)
 
