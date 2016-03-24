@@ -6,7 +6,13 @@
 #    mode: serial or parallel
 #    nsim: number of simulations
 #    q: estimated or fixed Q matrix
-plot_comparison <- function(x, xlabel, limit=NULL, output=NULL, no.plot=FALSE) {
+plot_comparison <- function(x, xlabel, trans="identity", limit=NULL, output=NULL
+                            , no.plot=FALSE, lang='pt_BR') {
+
+    print(c('plot_comparison',trans))
+    if (!trans %in% c('identity', 'log10')) {
+        stop('trans should be "identity" or "log10"')
+    }
 
     files <- x$files
     types <- x$types
@@ -57,15 +63,30 @@ plot_comparison <- function(x, xlabel, limit=NULL, output=NULL, no.plot=FALSE) {
         png(output, width=1024, height=768)
     }
 
-    p <- ggplot(data, aes(x=value, y=time, group=legend, colour=factor(legend))) +
+    if (lang == 'pt_BR') {
+        ylabel <- "Tempo decorrido (segundos)"
+    } else {
+        ylabel <- "Elapsed time (seconds)"
+    }
+
+    if (trans == 'log10') {
+        breaks=log_breaks(10,10)
+    } else {
+        breaks=pretty_breaks(n=10)
+    }
+
+    fl <- factor(data$legend)
+    p <- ggplot(data, aes(x=value, y=time, group=legend, colour=fl, shape=fl)) +
             stat_smooth(method='loess', fullrange=TRUE, se=FALSE) +
-            geom_point() +
+            geom_point(size=3) +
             theme_bw(base_size=26) +
-            #scale_x_discrete(breaks=breaks) +
+            scale_y_continuous(trans=trans, breaks=breaks) +
+            scale_x_continuous(breaks=pretty_breaks(n=10)) +
+            scale_shape_discrete(name = "") +
             scale_colour_brewer(palette="Set1", name = "") +
-            theme(legend.position="top", axis.text.y=element_text(hjust=1.3)) +
+            theme(legend.position="top", axis.text.y=element_text(hjust=1.0)) +
             xlab(xlabel) +
-            ylab("Elapsed time (seconds)")
+            ylab(ylabel)
     print(p)
 
     if (!is.null(output)) {
@@ -85,7 +106,7 @@ plot_speed_up <- function(x, limit=NULL, output=NULL, print.ideal=TRUE) {
     xlabel <- 'Número de núcleos de processamento'
     ylabel <- 'Speed up'
 
-    data <- plot_comparison(x, NULL, limit, no.plot=TRUE)
+    data <- plot_comparison(x, NULL, limit=limit, no.plot=TRUE)
     data <- data$data
 
     legend <- unique(x$legend)
@@ -109,11 +130,15 @@ plot_speed_up <- function(x, limit=NULL, output=NULL, print.ideal=TRUE) {
         png(output, width=1024, height=768)
     }
 
-    p <- ggplot(data, aes(x=value, y=speedup, group=legend, colour=factor(legend))) +
+    fl <- factor(data$legend)
+
+    p <- ggplot(data, aes(x=value, y=speedup, group=legend, colour=fl, shape=fl)) +
             stat_smooth(method='loess', fullrange=TRUE, se=FALSE) +
-            geom_point() +
+            geom_point(size=3) +
             theme_bw(base_size=26) +
-            #scale_x_discrete(breaks=breaks) +
+            scale_x_continuous(breaks=pretty_breaks(n=10)) +
+            scale_y_continuous(breaks=pretty_breaks(n=10)) +
+            scale_shape_discrete(name = "") +
             scale_colour_brewer(palette="Set1", name = "") +
             theme(legend.position="top", axis.text.y=element_text(hjust=1.3)) +
             xlab(xlabel) +
@@ -146,7 +171,7 @@ plot_boxplot <- function(out_dir, out_file, data, y, xlabel, ylabel, sfreemap_me
             ylab(ylabel) +
             theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
             theme(axis.title.y = element_text(vjust=1.8)) +
-            geom_hline(yintercept=sfreemap_mean, color='green', show.legend=TRUE) + 
+            geom_hline(yintercept=sfreemap_mean, color='green', show.legend=TRUE) +
             geom_hline(yintercept=simmap_mean, color='blue', show.legend=TRUE)
     print(p)
     dev.off()
@@ -189,7 +214,13 @@ parse <- function(file, type, legend, limit=NULL, mode=NULL, nsim=NULL, q=NULL, 
 }
 
 
-plot_comparison_for_q <- function(x, xlabel, output=NULL) {
+plot_comparison_for_q <- function(x, xlabel, trans='identity', output=NULL) {
+
+    print(c('plot_comparison_for_q',trans))
+
+    if (!trans %in% c('identity', 'log10')) {
+        stop('trans should be "identity" or "log10"')
+    }
 
     files <- x$files
     types <- x$types
@@ -207,7 +238,7 @@ plot_comparison_for_q <- function(x, xlabel, output=NULL) {
         stop ("files, types and legend must have the same length")
     }
 
-    col.names <- c('tree', 'taxa', 'state', 'time', 'nsim', 'mode', 'q', 'omp')
+    col.names <- c('tree', 'taxa', 'state', 'time', 'nsim', 'mode', 'q', 'omp', 'cores')
 
     final_data <- NULL
     final_plot <- NULL
@@ -252,13 +283,23 @@ plot_comparison_for_q <- function(x, xlabel, output=NULL) {
         png(output, width=1024, height=768)
     }
 
-    p <- ggplot(final_plot, aes(x=value, y=time, group=legend, colour=factor(legend))) +
+    fl <- factor(final_plot$legend)
+
+    if (trans == 'log10') {
+        breaks=log_breaks(10,10)
+    } else {
+        breaks=pretty_breaks(n=10)
+    }
+
+    p <- ggplot(final_plot, aes(x=value, y=time, group=legend, colour=fl, shape=fl)) +
             stat_smooth(method='loess', fullrange=TRUE, se=FALSE) +
-            geom_point() +
+            geom_point(size=3) +
             theme_bw(base_size=26) +
-            #scale_x_discrete(breaks=breaks) +
+            scale_y_continuous(trans=trans, breaks=breaks) +
+            scale_x_continuous(breaks=pretty_breaks(n=10)) +
             scale_colour_brewer(palette="Set1", name = "") +
-            theme(legend.position="top", axis.text.y=element_text(hjust=1.3)) +
+            scale_shape_discrete(name = "") +
+            theme(legend.position="top") +
             xlab(xlabel) +
             ylab("Tempo decorrido (segundos)")
     print(p)

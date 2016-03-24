@@ -1,5 +1,23 @@
 
-create_plots <- function() {
+create_plots <- function(lang='pt_BR') {
+
+    # this is by far not the best way to do it, but I feel lazy right now
+    if (lang == 'pt_BR') {
+        states <- "Número de estados"
+        taxa <- "Número de taxa"
+        trees <- "Número de árvores"
+        cores <- "Número de núcleos de processamento"
+        serial <- "Serial"
+        parallel <- "Paralelo"
+    } else {
+        states <- "Number of states"
+        taxa <- "Number of taxa"
+        trees <- "Number of trees"
+        cores <- "Number of cores"
+        serial <- "Serial"
+        parallel <- "Parallel"
+    }
+
 
     x <- list(
         files=c('sfreemapc.states.txt', 'sfreemap.states.txt', 'simmap.states.txt'),
@@ -8,7 +26,7 @@ create_plots <- function() {
         legend=c('SFREEMAP-C', 'SFREEMAP-R', 'SIMMAP')
     )
 
-    plot_comparison_for_q(x, "Number of states", output='/tmp/estimate_q_states.png')
+    plot_comparison_for_q(x, states, trans='log10', output='/tmp/estimate_q_states.png')
     # ----------------------------------------------------------
 
     x <- list(
@@ -18,17 +36,17 @@ create_plots <- function() {
         legend=c('SFREEMAP-C', 'SFREEMAP-R', 'SIMMAP')
     )
 
-    plot_comparison_for_q(x, "Number of taxa", output='/tmp/estimate_q_taxa.png')
+    plot_comparison_for_q(x, taxa, output='/tmp/estimate_q_taxa.png')
 
     # ----------------------------------------------------------
-    x <- list(
-        files=c('sfreemapc.states.txt', 'sfreemap.states.txt', 'sfreemapc.states.txt', 'sfreemap.states.txt'),
-        types=c('state', 'state', 'state', 'state'),
-        time=c('time_to_map', 'time_to_map', 'time_to_estimate', 'time_to_estimate'),
-        legend=c('SFREEMAP-C-MAP', 'SFREEMAP-R-MAP', 'SFREEMAP-C-ESTIMATE', 'SFREEMAP-R-ESTIMATE')
-    )
+    #x <- list(
+    #    files=c('sfreemapc.states.txt', 'sfreemap.states.txt', 'sfreemapc.states.txt', 'sfreemap.states.txt'),
+    #    types=c('state', 'state', 'state', 'state'),
+    #    time=c('time_to_map', 'time_to_map', 'time_to_estimate', 'time_to_estimate'),
+    #    legend=c('SFREEMAP-C-MAP', 'SFREEMAP-R-MAP', 'SFREEMAP-C-ESTIMATE', 'SFREEMAP-R-ESTIMATE')
+    #)
 
-    plot_comparison_for_q(x, "Number of states", output='/tmp/analyse_q_states.png')
+    #plot_comparison_for_q(x, states, output='/tmp/analyse_q_states.png')
 
     # ----------------------------------------------------------
     x <- list(
@@ -37,7 +55,7 @@ create_plots <- function() {
         legend=c('SFREEMAP-C', 'SFREEMAP-R')
     )
 
-    plot_comparison(x, "Number of trees", output='/tmp/trees_serial.png')
+    plot_comparison(x, trees, output='/tmp/trees_serial.png')
 
     # ----------------------------------------------------------
 
@@ -45,10 +63,10 @@ create_plots <- function() {
         files=c('sfreemapc.trees.txt', 'sfreemapc.trees.txt'),
         types=c('tree', 'tree'),
         mode=c('serial', 'parallel'),
-        legend=c('Serial', 'Paralelo')
+        legend=c(serial, parallel)
     )
 
-    plot_comparison(x, "Number of trees", output='/tmp/trees_parallel.png')
+    plot_comparison(x, trees, output='/tmp/trees_parallel.png')
 
     # ----------------------------------------------------------
     x <- list(
@@ -57,7 +75,7 @@ create_plots <- function() {
         legend=c('SFREEMAP-C', 'SFREEMAP-R')
     )
 
-    plot_comparison(x, "Number of taxa", output='/tmp/taxa_serial.png')
+    plot_comparison(x, taxa, output='/tmp/taxa_serial.png')
 
     # ----------------------------------------------------------
     x <- list(
@@ -66,7 +84,7 @@ create_plots <- function() {
         legend=c('SFREEMAP-C', 'SFREEMAP-R')
     )
 
-    plot_comparison(x, "Number of states", output='/tmp/states_serial.png')
+    plot_comparison(x, states, trans="log10", output='/tmp/states_serial.png')
     # ----------------------------------------------------------
 
     x <- list(
@@ -76,7 +94,7 @@ create_plots <- function() {
         legend=c('SFREEMAP', 'SIMMAP-1', 'SIMMAP-10', 'SIMMAP-20')
     )
 
-    plot_comparison(x, "Number of states", output='/tmp/states_simmap.png')
+    plot_comparison(x, states, trans="log10", output='/tmp/states_simmap.png')
     # ----------------------------------------------------------
 
     x <- list(
@@ -86,7 +104,7 @@ create_plots <- function() {
         legend=c('SFREEMAP', 'SIMMAP-1', 'SIMMAP-10', 'SIMMAP-20')
     )
 
-    plot_comparison(x, "Number of taxa", output='/tmp/taxa_simmap.png')
+    plot_comparison(x, taxa, output='/tmp/taxa_simmap.png')
     # ----------------------------------------------------------
 
     x <- list(
@@ -96,7 +114,7 @@ create_plots <- function() {
         legend=c('SFREEMAP', 'SIMMAP-1', 'SIMMAP-10', 'SIMMAP-20')
     )
 
-    plot_comparison(x, "Number of trees", output='/tmp/trees_simmap.png')
+    plot_comparison(x, trees, output='/tmp/trees_simmap.png')
     # ----------------------------------------------------------
 
     x <- list(
@@ -106,7 +124,7 @@ create_plots <- function() {
         legend=c('Mapeamento', 'Mapeamento mais matriz Q')
     )
 
-    plot_comparison(x, "Número de núcleos de processamento", output='/tmp/states_omp.png')
+    plot_comparison(x, cores, output='/tmp/states_omp.png')
     # ----------------------------------------------------------
 
     x <- list(
@@ -128,7 +146,7 @@ create_plots <- function() {
         legend=c('Sfreemap Paralelo')
     )
 
-    plot_speed_up(x, limit=17, output='/tmp/trees_speedup_cores.png')
+    plot_speed_up(x, limit=17, output='/tmp/trees_parallel_speedup.png')
 
     return(NULL)
 }
