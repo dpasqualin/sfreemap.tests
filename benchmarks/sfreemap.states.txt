@@ -1,21 +1,21 @@
-# n_trees,n_species,q_size,time,nsim,mode,q,omp
-1 256 2 0.295 1 serial fixed 1
-1 256 2 0.5944 1 serial estimated 1
-1 256 4 2.24175 1 serial fixed 1
-1 256 4 5.434 1 serial estimated 1
-1 256 6 9.9822 1 serial fixed 1
-1 256 6 21.1665 1 serial estimated 1
-1 256 8 30.5086 1 serial fixed 1
-1 256 8 59.74275 1 serial estimated 1
-1 256 10 76.29675 1 serial fixed 1
-1 256 10 157.466 1 serial estimated 1
-1 256 12 171.459 1 serial fixed 1
-1 256 12 341.403 1 serial estimated 1
-1 256 14 348.5696 1 serial fixed 1
-1 256 14 637.5588 1 serial estimated 1
-1 256 16 650.9925 1 serial fixed 1
-1 256 16 1615.0036 1 serial estimated 1
-1 256 18 1170.0916 1 serial fixed 1
-1 256 18 2452.34625 1 serial estimated 1
-1 256 20 1931.14325 1 serial fixed 1
-1 256 20 3323.4878 1 serial estimated 1
+# n_trees,n_species,q_size,time,nsim,mode,q,omp,cores
+1 256 2 0.295 1 serial fixed 1 1
+1 256 2 0.5944 1 serial estimated 1 1
+1 256 4 2.24175 1 serial fixed 1 1
+1 256 4 5.434 1 serial estimated 1 1
+1 256 6 9.9822 1 serial fixed 1 1
+1 256 6 21.1665 1 serial estimated 1 1
+1 256 8 30.5086 1 serial fixed 1 1
+1 256 8 59.74275 1 serial estimated 1 1
+1 256 10 76.29675 1 serial fixed 1 1
+1 256 10 157.466 1 serial estimated 1 1
+1 256 12 171.459 1 serial fixed 1 1
+1 256 12 341.403 1 serial estimated 1 1
+1 256 14 348.5696 1 serial fixed 1 1
+1 256 14 637.5588 1 serial estimated 1 1
+1 256 16 650.9925 1 serial fixed 1 1
+1 256 16 1615.0036 1 serial estimated 1 1
+1 256 18 1170.0916 1 serial fixed 1 1
+1 256 18 2452.34625 1 serial estimated 1 1
+1 256 20 1931.14325 1 serial fixed 1 1
+1 256 20 3323.4878 1 serial estimated 1 1
