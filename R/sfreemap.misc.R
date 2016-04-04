@@ -39,6 +39,11 @@ simmap.mean <- function(mtrees) {
         mean_emr <- colSums(mtrees$mapped.edge)
         mean_lmt <- countSimmap(mtrees)$N
     }
+
+    # ensure order
+    n <- sort(names(mean_emr))
+    mean_emr <- mean_emr[n]
+
     return (list(lmt=mean_lmt, emr=mean_emr))
 }
 

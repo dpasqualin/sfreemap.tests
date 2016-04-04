@@ -171,7 +171,7 @@ plot_boxplot <- function(out_dir, out_file, data, y, xlabel, ylabel, sfreemap_me
             ylab(ylabel) +
             theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
             theme(axis.title.y = element_text(vjust=1.8)) +
-            geom_hline(yintercept=sfreemap_mean, color='green', show.legend=TRUE) +
+            geom_hline(yintercept=sfreemap_mean, color='red', show.legend=TRUE) +
             geom_hline(yintercept=simmap_mean, color='blue', show.legend=TRUE)
     print(p)
     dev.off()
