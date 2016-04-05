@@ -7,6 +7,7 @@ sfreemap.test.boxplot <- function(species=128
                                   , n_tests=20
                                   , sample_freq=100
                                   , save_to_file=TRUE
+                                  , add_one_simulation=TRUE
                                   , ... ) {
 
 
@@ -44,7 +45,9 @@ sfreemap.test.boxplot <- function(species=128
     sfreemap_mean <- list(lmt=sum(desc$transitions), emr=desc$dwelling_times[1,sort(unique(states))])
     sfreemap_diff <- sfreemap.diff(hist, sfreemap_mean)
 
-    simmap_result <- matrix(0, nrow=n_tests*nsim
+    result_rows <- n_tests*nsim
+
+    simmap_result <- matrix(0, nrow=result_rows
             , ncol=length(metric_values)
             , dimnames=list(1:(n_tests*nsim), metric_values))
 
@@ -63,6 +66,7 @@ sfreemap.test.boxplot <- function(species=128
         mtrees <- all_mtrees[[sim_num]]
 
         for (i in 1:(length(mtrees)/n_trees)) {
+
             if ('phylo' %in% class(tree)) {
                 v <- simmap.mean(mtrees[[i]])
             } else {
@@ -70,17 +74,30 @@ sfreemap.test.boxplot <- function(species=128
                 end <- start + length(tree) - 1
                 v <- simmap.mean(mtrees[start:end])
             }
+
             diff <- sfreemap.diff(hist, v)
+
             if (Q_simmap == 'mcmc') {
                 step <- i*sample_freq
             } else {
                 step <- i
             }
+
             row <- c(step, diff$lmt, diff$emr, v$lmt, v$emr[1], v$emr[2])
+
             idx <- ((sim_num-1) * nsim) + i
             simmap_result[as.character(idx),] <- row
         }
 
+    }
+
+    if (add_one_simulation) {
+        one_simulation_rows <- simmap_result[1:nsim,]
+        one_simulation_rows[,1] <- 1
+        rownames(one_simulation_rows) <- NULL
+
+        simmap_result <- rbind(simmap_result, one_simulation_rows)
+        rownames(simmap_result) <- 1:nrow(simmap_result)
     }
 
     outdir_suffix <- format(Sys.time(), "%Y-%m-%d_%H:%M:%OS")
@@ -89,9 +106,10 @@ sfreemap.test.boxplot <- function(species=128
     out_dir <- create_out_dir(dest_dir, species, Q_simmap, model, outdir_suffix)
     out_file <- create_out_file(out_dir, 'simmap', nsim)
 
-    create_info_file(out_dir, species=species, Q=Q_simmap, pi=pi, model=model
-        , trees=trees, n_trees=n_trees, nsim=nsim, n_tests=n_tests
-        , sample_freq=sample_freq)
+    create_info_file(out_dir, species=species, Q_sfreemap=Q_sfreemap
+                     , Q_simmap=Q_simmap, pi=pi, model=model
+                     , trees=trees, n_trees=n_trees, nsim=nsim, n_tests=n_tests
+                     , sample_freq=sample_freq, add_one_simulation=add_one_simulation)
 
     plot_boxplot(out_dir, 'boxplot_emr_diff.png', simmap_result, 'diff_emr'
                  , 'Generations', 'Error', sfreemap_diff$emr)
