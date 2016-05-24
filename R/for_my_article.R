@@ -55,7 +55,7 @@ create_plots <- function(lang='pt_BR') {
         legend=c('SFREEMAP-C', 'SFREEMAP-R')
     )
 
-    plot_comparison(x, trees, output='/tmp/trees_serial.png')
+    plot_comparison(x, trees, lang=lang, output='/tmp/trees_serial.png')
 
     # ----------------------------------------------------------
 
@@ -66,7 +66,7 @@ create_plots <- function(lang='pt_BR') {
         legend=c(serial, parallel)
     )
 
-    plot_comparison(x, trees, output='/tmp/trees_parallel.png')
+    plot_comparison(x, trees, lang=lang, output='/tmp/trees_parallel.png')
 
     # ----------------------------------------------------------
     x <- list(
@@ -75,7 +75,7 @@ create_plots <- function(lang='pt_BR') {
         legend=c('SFREEMAP-C', 'SFREEMAP-R')
     )
 
-    plot_comparison(x, taxa, output='/tmp/taxa_serial.png')
+    plot_comparison(x, taxa, lang=lang, output='/tmp/taxa_serial.png')
 
     # ----------------------------------------------------------
     x <- list(
@@ -84,7 +84,7 @@ create_plots <- function(lang='pt_BR') {
         legend=c('SFREEMAP-C', 'SFREEMAP-R')
     )
 
-    plot_comparison(x, states, trans="log10", output='/tmp/states_serial.png')
+    plot_comparison(x, states, lang=lang, trans="log10", output='/tmp/states_serial.png')
     # ----------------------------------------------------------
 
     x <- list(
@@ -94,7 +94,7 @@ create_plots <- function(lang='pt_BR') {
         legend=c('SFREEMAP', 'SIMMAP-1', 'SIMMAP-10', 'SIMMAP-20')
     )
 
-    plot_comparison(x, states, trans="log10", output='/tmp/states_simmap.png')
+    plot_comparison(x, states, lang=lang, trans="log10", output='/tmp/states_simmap.png')
     # ----------------------------------------------------------
 
     x <- list(
@@ -104,7 +104,7 @@ create_plots <- function(lang='pt_BR') {
         legend=c('SFREEMAP', 'SIMMAP-1', 'SIMMAP-10', 'SIMMAP-20')
     )
 
-    plot_comparison(x, taxa, output='/tmp/taxa_simmap.png')
+    plot_comparison(x, taxa, lang=lang, output='/tmp/taxa_simmap.png')
     # ----------------------------------------------------------
 
     x <- list(
@@ -114,7 +114,7 @@ create_plots <- function(lang='pt_BR') {
         legend=c('SFREEMAP', 'SIMMAP-1', 'SIMMAP-10', 'SIMMAP-20')
     )
 
-    plot_comparison(x, trees, output='/tmp/trees_simmap.png')
+    plot_comparison(x, trees, lang=lang, output='/tmp/trees_simmap.png')
     # ----------------------------------------------------------
 
     x <- list(
@@ -124,7 +124,7 @@ create_plots <- function(lang='pt_BR') {
         legend=c('Mapeamento', 'Mapeamento mais matriz Q')
     )
 
-    plot_comparison(x, cores, output='/tmp/states_omp.png')
+    plot_comparison(x, cores, lang=lang, output='/tmp/states_omp.png')
     # ----------------------------------------------------------
 
     x <- list(

@@ -244,3 +244,13 @@ create_trees <- function(n_trees, n_species, q_size, unique=FALSE) {
 
     return(trees)
 }
+
+# try passing tree$tip.label
+remove_last_part_of_tip_name <- function(species) {
+
+    remove <- function(specie) {
+        return (paste(head(specie, 2), collapse="_"))
+    }
+
+    return (sapply(strsplit(species, '_'), remove))
+}
