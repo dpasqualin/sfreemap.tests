@@ -77,7 +77,7 @@ plot_comparison <- function(x, xlabel, trans="identity", limit=NULL, output=NULL
 
     fl <- factor(data$legend)
     p <- ggplot(data, aes(x=value, y=time, group=legend, colour=fl, shape=fl)) +
-            stat_smooth(method='loess', fullrange=TRUE, se=FALSE) +
+            geom_smooth(method='loess', fullrange=TRUE, se=FALSE) +
             geom_point(size=3) +
             theme_bw(base_size=26) +
             scale_y_continuous(trans=trans, breaks=breaks) +
@@ -292,7 +292,7 @@ plot_comparison_for_q <- function(x, xlabel, trans='identity', output=NULL) {
     }
 
     p <- ggplot(final_plot, aes(x=value, y=time, group=legend, colour=fl, shape=fl)) +
-            stat_smooth(method='loess', fullrange=TRUE, se=FALSE) +
+            geom_smooth(method='loess', fullrange=TRUE, se=FALSE) +
             geom_point(size=3) +
             theme_bw(base_size=26) +
             scale_y_continuous(trans=trans, breaks=breaks) +
