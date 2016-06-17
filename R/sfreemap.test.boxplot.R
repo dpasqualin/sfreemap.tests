@@ -43,6 +43,11 @@ sfreemap.test.boxplot <- function(species=128
 
     desc <- summary(sfreemap_result)
     sfreemap_mean <- list(lmt=sum(desc$transitions), emr=desc$dwelling_times[1,sort(unique(states))])
+
+    # save values for emr in terms of proportion instead of absolute values
+    tree_length <- sum(tree$edge.length)
+    hist$emr <- hist$emr/sum(hist$emr)
+    sfreemap_mean$emr <- sfreemap_mean$emr/tree_length
     sfreemap_diff <- sfreemap.diff(hist, sfreemap_mean)
 
     result_rows <- n_tests*nsim
@@ -75,6 +80,10 @@ sfreemap.test.boxplot <- function(species=128
                 v <- simmap.mean(mtrees[start:end])
             }
 
+            # transform emr results in terms of proportion instead of
+            # absolute values
+            v$emr <- v$emr / tree_length
+
             diff <- sfreemap.diff(hist, v)
 
             if (Q_simmap == 'mcmc') {
@@ -91,15 +100,6 @@ sfreemap.test.boxplot <- function(species=128
 
     }
 
-    # For the dwelling times we want the proportion spent on each state, not
-    # the absolute value.
-    # FIXME: this only works when n_strees == 1 
-    if ('phylo' %in% class(tree)) {
-        tree_length <- sum(tree$edge.length)
-        simmap_result[,'time_in_a'] <- simmap_result[,'time_in_a'] / tree_length
-        simmap_result[,'time_in_b'] <- simmap_result[,'time_in_b'] / tree_length
-    }
-
     if (add_one_simulation) {
         one_simulation_rows <- simmap_result[1:nsim,]
         one_simulation_rows[,1] <- 1
@@ -112,8 +112,6 @@ sfreemap.test.boxplot <- function(species=128
     outdir_suffix <- format(Sys.time(), "%Y-%m-%d_%H:%M:%OS")
     outdir_suffix <- paste(outdir_suffix, 'boxplot', sep='_')
 
-    
-
     out_dir <- create_out_dir(dest_dir, species, Q_simmap, model, outdir_suffix)
     out_file <- create_out_file(out_dir, 'simmap', nsim)
 
@@ -123,7 +121,7 @@ sfreemap.test.boxplot <- function(species=128
                      , sample_freq=sample_freq, add_one_simulation=add_one_simulation)
 
     plot_boxplot(out_dir, 'boxplot_emr_diff.png', simmap_result, 'diff_emr'
-                 , 'Simulations', 'Error', sfreemap_diff$emr)
+                 , 'Simulations', 'Error (%)', sfreemap_diff$emr)
 
     plot_boxplot(out_dir, 'boxplot_lmt_diff.png', simmap_result, 'diff_lmt'
                  , 'Simulations', 'Error', sfreemap_diff$lmt)
