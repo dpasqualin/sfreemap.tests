@@ -1,0 +1,11 @@
+species = 128
+Q_sfreemap = mcmc
+Q_simmap = mcmc
+pi = equal
+model = ER
+trees = 
+n_trees = 1
+nsim = 25
+n_tests = 30
+sample_freq = 100
+add_one_simulation = TRUE
