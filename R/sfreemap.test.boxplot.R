@@ -91,6 +91,15 @@ sfreemap.test.boxplot <- function(species=128
 
     }
 
+    # For the dwelling times we want the proportion spent on each state, not
+    # the absolute value.
+    # FIXME: this only works when n_strees == 1 
+    if ('phylo' %in% class(tree)) {
+        tree_length <- sum(tree$edge.length)
+        simmap_result[,'time_in_a'] <- simmap_result[,'time_in_a'] / tree_length
+        simmap_result[,'time_in_b'] <- simmap_result[,'time_in_b'] / tree_length
+    }
+
     if (add_one_simulation) {
         one_simulation_rows <- simmap_result[1:nsim,]
         one_simulation_rows[,1] <- 1
@@ -103,6 +112,8 @@ sfreemap.test.boxplot <- function(species=128
     outdir_suffix <- format(Sys.time(), "%Y-%m-%d_%H:%M:%OS")
     outdir_suffix <- paste(outdir_suffix, 'boxplot', sep='_')
 
+    
+
     out_dir <- create_out_dir(dest_dir, species, Q_simmap, model, outdir_suffix)
     out_file <- create_out_file(out_dir, 'simmap', nsim)
 
@@ -112,19 +123,19 @@ sfreemap.test.boxplot <- function(species=128
                      , sample_freq=sample_freq, add_one_simulation=add_one_simulation)
 
     plot_boxplot(out_dir, 'boxplot_emr_diff.png', simmap_result, 'diff_emr'
-                 , 'Generations', 'Error', sfreemap_diff$emr)
+                 , 'Simulations', 'Error', sfreemap_diff$emr)
 
     plot_boxplot(out_dir, 'boxplot_lmt_diff.png', simmap_result, 'diff_lmt'
-                 , 'Generations', 'Error', sfreemap_diff$lmt)
+                 , 'Simulations', 'Error', sfreemap_diff$lmt)
 
     plot_boxplot(out_dir, 'boxplot_lmt.png', simmap_result, 'transitions'
-                 , 'Generations', 'Transitions', sfreemap_mean$lmt)
+                 , 'Simulations', 'Transitions', sfreemap_mean$lmt)
 
     plot_boxplot(out_dir, 'boxplot_emr_a.png', simmap_result, 'time_in_a'
-                 , 'Generations', 'Dwelling time', sfreemap_mean$emr[1])
+                 , 'Simulations', 'Dwelling time (%)', sfreemap_mean$emr[1])
 
     plot_boxplot(out_dir, 'boxplot_emr_b.png', simmap_result, 'time_in_b'
-                 , 'Generations', 'Dwelling time', sfreemap_mean$emr[2])
+                 , 'Simulations', 'Dwelling time (%)', sfreemap_mean$emr[2])
 
     write_to_file(out_file, simmap_result, tree, out_dir, hist)
 
